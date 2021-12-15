@@ -4,6 +4,8 @@
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
+    "outDir": "dist",
+    "rootDir": "./src",
     "importHelpers": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
