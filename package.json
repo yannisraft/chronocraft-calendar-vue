@@ -11,10 +11,7 @@
     "build": "vue-cli-service build",
     "build-lib": "npx rimraf dist && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --module es2015 --outDir dist/esm -d",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e",
-    "tests": "echo \"Error: no test specified\" && exit 1"
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
   },
   "dependencies": {  
     "vue-demi": "^0.12.1"
