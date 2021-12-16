@@ -13,7 +13,8 @@
     "build:esm": "tsc --module es2015 --outDir dist/esm -d",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {  
     "vue-demi": "^0.12.1"
