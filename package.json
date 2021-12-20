@@ -1,6 +1,6 @@
 {
   "name": "chronocraft-calendar-vue",
-  "version": "0.0.13",
+  "version": "0.1.5",
   "license": "MIT",
   "homepage": "https://github.com/raftopyannis/chronocraft-calendar-vue",
   "main": "dist/cjs/index.js",

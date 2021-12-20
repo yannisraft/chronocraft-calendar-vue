@@ -42,16 +42,16 @@ yarn lint
 ## Usage Of Components Built
 **As Component**
 ```
-  import { TestWorld } from 'chronocraft-calendar-vue/dist/esm/testworld';
+  import { Calendar } from 'chronocraft-calendar-vue';
   ...
   components:{
-    TestWorld
+    Calendar
   }
 ```
 
 **As Plugin**
 ```
-  import { TestWorld } from 'chronocraft-calendar-vue';
+  import ChronoCraftCalendar from 'chronocraft-calendar-vue';
     ...
-  app.use(TestWorld)
+  app.use(ChronoCraftCalendar)
 ```
