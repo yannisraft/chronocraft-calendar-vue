@@ -1,7 +1,6 @@
-# vue 3 Component Library BoilerPlate
+# A Vue 3 Flexible and High Performance Infinite Scrolling Calendar
 
-
-**Technology Used:**\
+**Technology Used:**
 [Vuejs 3.0](https://github.com/vuejs/vue-next)\
 [Typescript](https://github.com/microsoft/TypeScript)\
 [Rollup](https://github.com/rollup/rollup)
@@ -9,17 +8,12 @@
 ## Project setup
 Please follow below mentioned step to run this project:
 
-- Clone the repo
-```shell
-https://github.com/shubhadip/chronocraft-calendar-vue
-```
-
-### Run
+### Installing the Project
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Running for Development
 ```
 yarn serve
 ```
@@ -29,12 +23,12 @@ yarn serve
 yarn build
 ```
 
-### Build Library
+### Building the Library
 ```
 yarn build:js
 ```
 
-### Build Library With Separate Css file
+### Building the Library With Separate Css file
 ```
 yarn build:js_css
 ```
