@@ -1,40 +1,8 @@
-export declare enum MatchType {
-    Exact = "exact",
-    LessThan = "less_than",
-    LessThanOrRqual = "less_than_or_equal",
-    GreaterThan = "greater_than",
-    GreaterThanOrEqual = "greater_than_or_equal",
-    BetweenRange = "between_range"
-}
-export interface SortInterface {
-    type: string;
-    label: string;
-    dataSource: string;
-    sortingKey?: string;
-    ordering?: string;
-    sortFunction?: string;
-    value?: string;
-}
-export interface Option {
-    [x: string]: any;
-}
-export interface Options {
-    label: string;
-    value: string;
-    startKey?: number;
-    endKey?: number;
-}
-export interface FilterInterface {
-    label: string;
-    type: string;
-    options: any;
-    dataSource: string;
-    filterKey: string;
-    matchType: MatchType;
-    value?: string[] | number[] | boolean[] | string | number;
-    filterFunction?: string;
-}
-export interface FilterPayload {
-    filterConfig: FilterInterface;
-}
-//# sourceMappingURL=index.d.ts.map
+import { DefineComponent, Plugin } from "vue";
+
+declare const vue3ComponentLibrary: Exclude<Plugin["install"], undefined>;
+
+export default vue3ComponentLibrary;
+
+export const TestWorld: Exclude<Plugin["install"], undefined> | DefineComponent;
+export const HelloWorld: Exclude<Plugin["install"], undefined> | DefineComponent;
