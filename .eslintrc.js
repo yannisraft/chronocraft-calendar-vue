@@ -1,7 +1,7 @@
 module.exports = {
-  root: true,
+  root: false,
   env: {
-    node: true
+    node: false
   },
   extends: [
     "plugin:vue/vue3-essential",
@@ -17,7 +17,13 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-var": "off",
-    "prefer-const": "off"
+    "prefer-const": "off",
+    "camelcase": "off",
+    "@typescript-eslint/camelcase": "off",
+    "preserveWhitespace": 0,
+    "missing-whitespace-between-attributes": 0,
+    "no-whitespace-before-property": 0,
+    'prettier/prettier': 'off'
   },
   overrides: [
     {

@@ -13,7 +13,7 @@ header {
   ul, ol {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-gap: 0.35em;
+    /* grid-gap: 0.35em; */
     margin: 0 auto;
     max-width: 64em;
     padding: 0;
@@ -48,19 +48,23 @@ header {
     font-weight: 800;
     text-decoration: none;
   }
+
+  .litoday {
+    background-color: #f7e5e5 !important;
+  }
   
-  ol.day-grid li:nth-child(1),
+  /* ol.day-grid li:nth-child(1),
   ol.day-grid li:nth-child(2),
   ol.day-grid li:nth-child(3),
   ol.day-grid li:nth-child(34),
   ol.day-grid li:nth-child(35) {
     background-color: #fff;
-  }
+  } */
   
   @media all and (max-width: 800px) {
-    ul, ol {
+    /* ul, ol {
       grid-gap: .25em;
-    }
+    } */
     
     ul.weekdays li {
       font-size: 0;
