@@ -100,7 +100,7 @@ export default defineComponent({
         let slidercontent = null;
         let isDown = false;
         let startY;
-        let scrollTop;
+        let movescrollTop;
         let velocity = 0.96;
         let days = ref([]);
         let scrollerMoving = false;
@@ -216,34 +216,46 @@ export default defineComponent({
         }
 
         function getNextdays(dragging, e) {
-            previousScrollY = slider.scrollTop;
-
             startDate = bottomDate;
             endDate = addDays(bottomDate, daysToLoad);
-
             bottomDate = endDate;
 
-            GenerateForwardMonth(startDate, endDate, false);
-
-            setTimeout(() => {
-                loadingDays = false;
-            }, 400);
-
+            
+            setTimeout(()=>{
+                GenerateForwardMonth(startDate, endDate, false);
+            }, 0);
+            
             topDate = addDays(topDate, daysToLoad);
 
             // Remove Top Previous Dates
             days.value.splice(0, daysToLoad);
 
+            setTimeout(() => {
+                loadingDays = false;
+            }, 100);
+
             let cell = document.querySelector('.cell');
             let cellheight = cell.offsetHeight + gridgap;
+
+            if(scrollerMoving)
+            {                
+                var targetPositionY = previousScrollY - (cellheight * daysToLoad/7); 
+                var diff = previousScrollY - movescrollTop;
+ 
+                movescrollTop = targetPositionY - diff;
+                slider.scrollTop = targetPositionY; 
+
+                // SEMI WORKING
+                /* setTimeout(()=>{
+                    movescrollTop = targetPositionY - diff;
+                    slider.scrollTop = targetPositionY; 
+                }, 0); */
+            }
 
             //this.UpdateSchedules();
         }
 
-        function getPreviousdays(dragging, e) {            
-            //previousScrollY = slider.scrollTop;
-            //console.log("previousScrollY: ", previousScrollY);
-
+        function getPreviousdays(dragging, e) {
             startDate = addDays(topDate, -daysToLoad);
             endDate = topDate;
 
@@ -262,13 +274,25 @@ export default defineComponent({
 
             let cell = document.querySelector('.cell');
             let cellheight = cell.getBoundingClientRect().height + gridgap;
-           
-            var targetPositionY = previousScrollY + (cellheight * daysToLoad/7);
-            //console.log("TARGET SCROLL: ", targetPositionY);
 
-            setTimeout(()=>{
-                slider.scrollTop = targetPositionY;
-            }, 0);
+            var targetPositionY = previousScrollY + (cellheight * daysToLoad/7); 
+            if(scrollerMoving)
+            {
+                var diff = previousScrollY - movescrollTop;
+ 
+                movescrollTop = targetPositionY - diff;
+                setTimeout(()=>{
+                    slider.scrollTop = targetPositionY;
+                }, 0);
+                //
+            } else {
+                setTimeout(()=>{
+                    slider.scrollTop = targetPositionY;
+                }, 0);
+            }
+           
+            
+            
 
             //this.UpdateSchedules();
         }
@@ -328,7 +352,7 @@ export default defineComponent({
                 isDown = true;
                 slider.classList.add("active");
                 startY = e.pageY - slider.offsetTop;
-                scrollTop = slider.scrollTop;
+                movescrollTop = slider.scrollTop;
                 previousY = e.clientY;
 
                 cancelMomentumTracking();
@@ -341,6 +365,7 @@ export default defineComponent({
 
             slider.addEventListener("mouseup", () => {
                 isDown = false;
+                scrollerMoving = false;
                 slider.classList.remove("active");
                 beginMomentumTracking();
             });
@@ -348,20 +373,15 @@ export default defineComponent({
             slider.addEventListener("mousemove", e => {
                 if (!isDown) return;
                 e.preventDefault();
+                scrollerMoving = true;
+
                 const y = e.pageY - slider.offsetTop;
-                const walk = (y - startY) * 3; //scroll-fast
+                const walk = (y - startY) * 2; //scroll-fast
                 const prevscrollTop = slider.scrollTop;
-                slider.scrollTop = scrollTop - walk;
+                slider.scrollTop = movescrollTop - walk;
                 velY = slider.scrollTop - prevscrollTop;
 
-                var _y = e.clientY;
-                var dirsign = 1;
-                if ((_y - previousY) < 0) {
-                    dirsign = 1;
-                } else {
-                    dirsign = -1;
-                }
-                //detectScrollEdges(dirsign, true, e);
+                slider.scrollTop = movescrollTop - walk;
 
                 UpdateCurrentMonth();
             });
@@ -374,10 +394,7 @@ export default defineComponent({
 
                 const prevscrollTop = slider.scrollTop;
                 slider.scrollTop += walk;
-                velY = slider.scrollTop - prevscrollTop;         
-
-                //var dirsign = parseInt(e.deltaY/ Math.abs(e.deltaY));
-                //detectScrollEdges(dirsign, true, e);
+                velY = slider.scrollTop - prevscrollTop;
 
                 beginMomentumTracking();                
 
@@ -387,10 +404,10 @@ export default defineComponent({
             slider.addEventListener("scroll", (e) => {
                 let scroll = slider.scrollTop;
 
-                //var dirsign = parseInt(e.deltaY/ Math.abs(e.deltaY));
+                //console.log(scroll);
                 var delta = scroll - previousScrollY;
                 var dirsign = parseInt(delta/ Math.abs(delta));
-                detectScrollEdges(dirsign, true, e);
+                detectScrollEdges(dirsign, false, e);
                 previousScrollY = scroll;
             });
         } // end f(): Create Scroller
@@ -457,7 +474,7 @@ export default defineComponent({
                     left: 0,
                     behavior: 'smooth'
                 });
-            }, 100);
+            }, 1000);
 
             UpdateCurrentMonth();
 
