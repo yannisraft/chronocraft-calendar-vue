@@ -29,7 +29,7 @@
             </li>
         </ul>
         <div class="scroller-container debugscrolling">
-            <ol class="day-grid" :style="{ 'grid-gap': gridgap + 'px' }">
+            <ol class="scrollercontent" :style="{ 'grid-gap': gridgap + 'px' }">
                 <li v-for="(day) in days" :key="day.id" :class="[{'litoday': day.today}, 'cell']" :style="{'background-color': day.bgcolor}">{{ day.num }}</li>
                 <!-- <li class="month=prev">29</li>
           <li class="month=prev">30</li>
@@ -76,6 +76,7 @@
 import {
     defineComponent,
     ref,
+    reactive,
     onMounted
 } from "vue";
 import {
@@ -96,6 +97,7 @@ export default defineComponent({
         let velY = 0;
         let momentumID = 0;
         let slider = null;
+        let slidercontent = null;
         let isDown = false;
         let startY;
         let scrollTop;
@@ -104,13 +106,16 @@ export default defineComponent({
         let scrollerMoving = false;
         let loadingDays = false;
         let justLoaded = false;
-        let scrollLoadingOffset = 300;
+        let scrollLoadingOffset = 200;
+        let current_scrollLoadingOffset = scrollLoadingOffset;
+        let wheelscrollspeed = 12;
+        let current_wheelscrollspeed = wheelscrollspeed;
         let previousY = 0;
         let startDate = null;
         let endDate = null;
         let bottomDate = null;
         let topDate = null;
-        let daysToLoad = 28;
+        let daysToLoad = 56;
         let previousScrollY = 0;
         let gridgap = 4;
         let colorMonthVariations = [
@@ -128,7 +133,6 @@ export default defineComponent({
             var max = colorMonthVariations.length;
 
             colorIndex = monthnum % max;
-            console.log('colorIndex: ', colorIndex);
 
             color = colorMonthVariations[colorIndex];
 
@@ -148,7 +152,8 @@ export default defineComponent({
         }
 
         function ISToday(_date) {
-            const today = new Date()
+            let today = new Date();
+            //today = addDays(today, 1);
             return _date.getDate() == today.getDate() &&
                 _date.getMonth() == today.getMonth() &&
                 _date.getFullYear() == today.getFullYear()
@@ -180,10 +185,9 @@ export default defineComponent({
         }
 
         function GenerateBackwardMonth(start, end, atInitialization) {
-            /* console.log("start: ", start);
-            console.log("end: ", end); */
             var bdates = enumerateDaysBetweenDates(start, end);
-            for (var bd = bdates.length - 1; bd >= 0; bd--) {
+            var daystoadd = [];
+            for (var bd = 0; bd < bdates.length - 1; bd++) {
                 if (bd < bdates.length - 1) {
                     var date_b = bdates[bd];
 
@@ -191,8 +195,8 @@ export default defineComponent({
                     if (ISToday(date_b)) {
                         today = true;
                     }
-
-                    days.value.unshift({
+                    
+                    daystoadd.push({
                         id: formatDate(date_b, 'dd-MMM-yyyy'),
                         date: date_b,
                         num: formatDate(date_b, 'dd EEE MM'),
@@ -204,22 +208,11 @@ export default defineComponent({
                     if (bd === 0) topDate = date_b;
                 }
             }
-            /* var fdates = enumerateDaysBetweenDates(start, end);
-            for (var md = 0; md < fdates.length; md++) {
-                if (md > 0) {
-                    var date_a = fdates[md];
 
-                    days.value.push({
-                        id: formatDate(date_a, 'dd-MMM-yyyy'),
-                        date: date_a,
-                        num: formatDate(date_a, 'dd EEE MM'),
-                        today: false
-                    });
-
-                    // Set Bottom Newest Date
-                    if (md === fdates.length - 1) bottomDate = date_a;
-                }
-            } */
+            if(daystoadd.length > 0)
+            {
+                days.value = daystoadd.concat(days.value);
+            }
         }
 
         function getNextdays(dragging, e) {
@@ -243,32 +236,24 @@ export default defineComponent({
 
             let cell = document.querySelector('.cell');
             let cellheight = cell.offsetHeight + gridgap;
-            if (!dragging) {
-                slider.scrollTop = previousScrollY - (cellheight * (daysToLoad));
-            } else {
-                slider.scrollTop = previousScrollY - (cellheight * (daysToLoad));
-
-                // Update Scroller
-                scrollTop = slider.scrollTop;
-                startY = e.pageY - slider.offsetTop;
-            }
 
             //this.UpdateSchedules();
         }
 
-        function getPreviousdays(dragging, e) {
-            previousScrollY = slider.scrollTop;
+        function getPreviousdays(dragging, e) {            
+            //previousScrollY = slider.scrollTop;
+            //console.log("previousScrollY: ", previousScrollY);
 
-            startDate = addDays(topDate, -28);
+            startDate = addDays(topDate, -daysToLoad);
             endDate = topDate;
 
-            //topDate = endDate;
-
-            GenerateBackwardMonth(startDate, endDate, false);
+            setTimeout(()=>{
+                GenerateBackwardMonth(startDate, endDate, false);
+            }, 0);
 
             setTimeout(() => {
                 loadingDays = false;
-            }, 400);
+            }, 100);
 
             bottomDate = addDays(bottomDate, -daysToLoad);
 
@@ -276,16 +261,14 @@ export default defineComponent({
             days.value.splice(days.value.length - daysToLoad, days.value.length - 1);
 
             let cell = document.querySelector('.cell');
-            let cellheight = cell.offsetHeight + gridgap;
-            if (!dragging) {
-                slider.scrollTop = previousScrollY + (cellheight * (daysToLoad));
-            } else {
-                slider.scrollTop = previousScrollY + (cellheight * (daysToLoad));
+            let cellheight = cell.getBoundingClientRect().height + gridgap;
+           
+            var targetPositionY = previousScrollY + (cellheight * daysToLoad/7);
+            //console.log("TARGET SCROLL: ", targetPositionY);
 
-                // Update Scroller
-                scrollTop = slider.scrollTop;
-                startY = e.pageY - slider.offsetTop;
-            }
+            setTimeout(()=>{
+                slider.scrollTop = targetPositionY;
+            }, 0);
 
             //this.UpdateSchedules();
         }
@@ -293,7 +276,8 @@ export default defineComponent({
         // f(): Create Scroller
         //
         function SetupScroller() {
-            slider = document.querySelector(".scroller-container");
+            slider = document.querySelector(".scroller-container");  
+            slidercontent = document.querySelector(".scrollercontent");     
 
             function momentumLoop() {
                 slider.scrollTop += velY;
@@ -319,7 +303,7 @@ export default defineComponent({
                 // Detect Scroll on Edges
                 // ----------------------
                 if (sign === 1) {
-                    if (slider.scrollTop + slider.offsetHeight > slider.scrollHeight - scrollLoadingOffset) {
+                    if (slider.scrollTop + slider.offsetHeight > slider.scrollHeight - current_scrollLoadingOffset) {
                         if (!loadingDays && !justLoaded) {
                             console.log('scroll ended Bottom');
                             loadingDays = true;
@@ -329,7 +313,7 @@ export default defineComponent({
                 }
 
                 if (sign === -1) {
-                    if (slider.scrollTop < scrollLoadingOffset) {
+                    if (slider.scrollTop < current_scrollLoadingOffset) {
                         if (!loadingDays && !justLoaded) {
                             console.log('scroll ended Top');
                             loadingDays = true;
@@ -377,7 +361,7 @@ export default defineComponent({
                 } else {
                     dirsign = -1;
                 }
-                detectScrollEdges(dirsign, true, e);
+                //detectScrollEdges(dirsign, true, e);
 
                 UpdateCurrentMonth();
             });
@@ -386,13 +370,28 @@ export default defineComponent({
                 cancelMomentumTracking();
 
                 const deltaY = Math.sign(e.deltaY);
-                const walk = deltaY * 12;
+                const walk = deltaY * current_wheelscrollspeed;
 
                 const prevscrollTop = slider.scrollTop;
                 slider.scrollTop += walk;
-                velY = slider.scrollTop - prevscrollTop;
+                velY = slider.scrollTop - prevscrollTop;         
 
-                beginMomentumTracking();
+                //var dirsign = parseInt(e.deltaY/ Math.abs(e.deltaY));
+                //detectScrollEdges(dirsign, true, e);
+
+                beginMomentumTracking();                
+
+                UpdateCurrentMonth();                
+            });
+
+            slider.addEventListener("scroll", (e) => {
+                let scroll = slider.scrollTop;
+
+                //var dirsign = parseInt(e.deltaY/ Math.abs(e.deltaY));
+                var delta = scroll - previousScrollY;
+                var dirsign = parseInt(delta/ Math.abs(delta));
+                detectScrollEdges(dirsign, true, e);
+                previousScrollY = scroll;
             });
         } // end f(): Create Scroller
 
@@ -401,7 +400,8 @@ export default defineComponent({
         function GenerateDays() {
 
             // Initialize with Today
-            const d = new Date();
+            let d = new Date();
+            //d = addDays(d, 2);
             let day = d.getDay();
 
             // 1. Add backward days
@@ -424,9 +424,10 @@ export default defineComponent({
             }
 
             // 2. Add forward days
-            for (var f = day + 1; f < 7; f++) {
+            var forwarddaystoload = 6 - day;
+            for (var f = 1; f <= forwarddaystoload; f++) {
                 var newdate_f = new Date(d.getTime());
-                newdate_f = addDays(newdate_f, 7 - f);
+                newdate_f = addDays(newdate_f, f);
 
                 days.value.push({
                     id: formatDate(newdate_f, 'dd-MMM-yyyy'),
@@ -439,12 +440,12 @@ export default defineComponent({
 
             // 3. Now add forward 1 month
             var lastdate = (days.value[days.value.length - 1]).date;
-            var lastmonthdate = addDays(lastdate, 28);
+            var lastmonthdate = addDays(lastdate, daysToLoad);
             GenerateForwardMonth(lastdate, lastmonthdate, true);
 
             // 3. Now add backward 4 weeks
             var firstdate = (days.value[0]).date;
-            var firstdateofmonth = addDays(firstdate, -28);
+            var firstdateofmonth = addDays(firstdate, -daysToLoad);
             GenerateBackwardMonth(firstdateofmonth, firstdate, true);
 
             // 4. Scroll to match today
@@ -462,7 +463,14 @@ export default defineComponent({
 
         } // end f(): Generate Calendar Days
 
+        function WindowResized(e) {
+            var win_width = e.target.innerWidth;
+            current_wheelscrollspeed = (win_width*wheelscrollspeed)/1024;
+            //current_scrollLoadingOffset = (win_width*400)/1024;
+        }
+
         onMounted(() => {
+            window.addEventListener("resize", WindowResized);
             SetupScroller();
             GenerateDays();
         });
