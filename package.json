@@ -1,6 +1,6 @@
 {
   "name": "chronocraft-calendar-vue",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "license": "MIT",
   "homepage": "https://github.com/raftopyannis/chronocraft-calendar-vue",
   "main": "dist/cjs/index.js",
@@ -21,6 +21,18 @@
       "path": "git-cz"
     }
   },
+  "keywords": [
+    "calendar",
+    "smooth",
+    "scrollable",
+    "infinite",
+    "draggable",
+    "cal",
+    "scroll",
+    "cal",
+    "bidirectional",
+    "scrolling"
+  ],
   "scripts": {
     "cz": "git-cz",
     "serve": "vue-cli-service serve",

@@ -83,7 +83,7 @@ import {
     enumerateDaysBetweenDates,
     formatDate,
     addDays
-} from "./../../utilities/dates-utilities";
+} from "./../../utilities/index";
 
 export default defineComponent({
     name: "Calendar",
