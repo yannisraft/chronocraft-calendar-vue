@@ -4,10 +4,15 @@ header {
     font-size: calc(6px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
     justify-content: center;
     margin-bottom: 2em;
-    background: #000;
+    background: #837f7f;
     color: #fff;
     min-height: 2vh;
     text-align: center;
+    font-family: 'Quicksand', sans-serif;    
+  }
+
+  header h1 {
+    font-weight: 400;
   }
   
   ul, ol {
@@ -52,10 +57,12 @@ header {
     border: none;
     font-weight: 800;
     text-decoration: none;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
   }
 
   .litoday {
-    background-color: #f7e5e5 !important;
+    background-color: #ffe9e9 !important;
   }
 
   
@@ -74,3 +81,5 @@ header {
       text-align: center;
       }
   }
+
+  

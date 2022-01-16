@@ -9,6 +9,12 @@ export const getDiff = (d1: Date, d2: Date): number => {
     return result;
 };
 
+export const daysMatch = (d1: Date, d2: Date): boolean => {
+    return d1.getDate() == d2.getDate() &&
+        d1.getMonth() == d2.getMonth() &&
+        d1.getFullYear() == d2.getFullYear()
+}
+
 export const twoDigitPad = (num: number): string => {
     return num < 10 ? ("0" + String(num)) : String(num);
 }
@@ -140,7 +146,12 @@ export const enumerateStringDaysBetweenDates = (
     return dates;
 };
 
-
+export const checkIfWeekendDay = (date: Date): boolean => {
+    var isWeekend = false;
+    var dayOfWeek = date.getDay();
+    isWeekend = (dayOfWeek === 6) || (dayOfWeek  === 0);
+    return isWeekend;
+};
 /*
 var monthNames = [
   "January", "February", "March", "April", "May", "June", "July",

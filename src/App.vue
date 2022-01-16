@@ -1,5 +1,15 @@
 <template>
-  <Calendar />
+  <Calendar @on-scroll="OnScroll" :weekendcolored="true">
+      <!-- <template v-slot:header="slotProps">
+            <h1>{{ slotProps.headerlabel }}</h1>
+        </template> -->
+      <!-- <template v-slot:headercell="slotProps">
+        <span>{{ slotProps.daylabel.short }}</span>
+    </template> -->
+    <!-- <template v-slot:daycell="slotProps">
+        <span>{{ slotProps.day.num }}</span>
+    </template> -->
+  </Calendar>
 </template>
 
 <script>
@@ -9,6 +19,11 @@ export default {
   name: "App",
   components: {
     Calendar
+  },
+  methods: {
+      OnScroll() {
+          console.log("scrolled");
+      }
   }
 };
 </script>
