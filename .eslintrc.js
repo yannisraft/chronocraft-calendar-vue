@@ -23,7 +23,8 @@ module.exports = {
     "preserveWhitespace": 0,
     "missing-whitespace-between-attributes": 0,
     "no-whitespace-before-property": 0,
-    'prettier/prettier': 'off'
+    'prettier/prettier': 'off',
+    'vue/no-unused-components': 0
   },
   overrides: [
     {

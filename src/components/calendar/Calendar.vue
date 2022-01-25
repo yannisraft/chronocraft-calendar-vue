@@ -647,15 +647,7 @@ export default defineComponent({
     position: relative;
 }
 
-.scrollercontent .cell span {
-    position: absolute;
-    top: 5pt;
-    left: 5pt;
-    font-size: 3vw;
-    color: #777;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 200;
-}
+
 
 .cell-events-container {
     flex: 1;

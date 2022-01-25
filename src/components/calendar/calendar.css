@@ -65,6 +65,16 @@ header {
     background-color: #ffe9e9 !important;
   }
 
+.scrollercontent .cell span {
+    position: absolute;
+    top: 5pt;
+    left: 5pt;
+    font-size: 3vw;
+    color: #777;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 200;
+}
+
   
   @media all and (max-width: 800px) {
     /* ul, ol {
@@ -81,5 +91,13 @@ header {
       text-align: center;
       }
   }
+
+  @media all and (min-width: 1150px) {
+    .scrollercontent .cell span {
+        font-size: 24pt !important;
+    }
+  }
+
+
 
   
