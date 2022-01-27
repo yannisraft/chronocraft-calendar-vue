@@ -359,12 +359,6 @@ export default defineComponent({
 
                 movescrollTop = targetPositionY - diff;
                 slider.scrollTop = targetPositionY;
-
-                // SEMI WORKING
-                /* setTimeout(()=>{
-                            movescrollTop = targetPositionY - diff;
-                            slider.scrollTop = targetPositionY; 
-                        }, 0); */
             }
 
             UpdateEvents();
