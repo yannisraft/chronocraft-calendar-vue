@@ -13,9 +13,11 @@
         </li>
     </ul>
     <div class="scroller-container">
-        <Scroller :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="7" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :data="scrollerdata" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
-            <template v-slot:cell="slotProps">
-                <span>{{ slotProps.data.id }}</span>
+        <Scroller :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :data="scrollerdata" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious" @on-data-updated="onDataUpdated">
+            <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgcolor }">
+                <div :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
+                    <span>{{ slotProps.data.num }}</span>
+                </div>
             </template>
         </Scroller>
     </div>
@@ -87,6 +89,10 @@ export default defineComponent({
             type: Number,
             default: 6
         },
+        weekendcolored: {
+            type: Boolean,
+            default: true,
+        },
         monthcolorvariations: {
             type: Array,
             default: () => {
@@ -145,12 +151,14 @@ export default defineComponent({
         let topDate: any = null;
         let startDate: any = null;
         let endDate: any = null;
-        let daysToLoad = 120;
+        let initialdaysToLoad = 70;
+        let newdaysToLoad = 28;
 
         function UpdateCurrentMonth() {
-            let middledateIndex: number = (scrollerdata.value.length / 2) - 1;
+            let middledateIndex: number = Math.round((scrollerdata.value.length / 2) - 1);            
             if (scrollerdata.value[middledateIndex]) {
                 var middledate: any = scrollerdata.value[middledateIndex].date;
+
                 var monthnum = middledate.getMonth();
                 var monthStr = formatDate(middledate, "MMMM yyyy");
 
@@ -229,20 +237,20 @@ export default defineComponent({
                 }
             }
 
-            /* if (daystoadd.length > 0) {
-                scrollerdata.value = [...daystoadd, ...scrollerdata.value];
-            } */
             return daystoadd;
         }
 
         function GetMonthColor(monthnum: number) {
-            let color: String = "#eaeaea";
+            let color: String = "#ffffff00";
             let colorIndex: number = 0;
             var max = props.monthcolorvariations.length;
 
             colorIndex = monthnum % max;
 
-            color = (String)(props.monthcolorvariations[colorIndex]);
+            if(props.monthcolorvariations[colorIndex])
+            {
+                color = (String)(props.monthcolorvariations[colorIndex]);
+            }
 
             return color;
         }
@@ -296,13 +304,13 @@ export default defineComponent({
 
             // 3. Now add forward 1 month
             var lastdate: any = initialDays[initialDays.length - 1].date;
-            var lastmonthdate: any = addDays(lastdate, Math.round(daysToLoad/2));
+            var lastmonthdate: any = addDays(lastdate, Math.round(initialdaysToLoad));
             var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);            
             initialDays = [...initialDays, ...daystoadd];
 
-            // 3. Now add backward 4 weeks
+            // 3. Now add backward 1 month
             let firstdate: any = initialDays[0].date;
-            let firstdateofmonth: any = addDays(firstdate, Math.round(-daysToLoad/2));
+            let firstdateofmonth: any = addDays(firstdate, Math.round(-initialdaysToLoad));
             var daystoaddbackward = GenerateBackwardMonth(firstdateofmonth, firstdate, true);
             //scrollerdata.value = [...daystoaddbackward, ...scrollerdata.value];
             initialDays = [...daystoaddbackward, ...initialDays];
@@ -316,11 +324,11 @@ export default defineComponent({
                 const cell = document.querySelector(".cell");
                 if (cell) {
                     let cellheight = (cell as HTMLInputElement).offsetHeight + props.gap;
-                    /* slider.scrollBy({
-                        top: cellheight * (daysToLoad / 7),
-                        left: 0,
-                        behavior: "smooth",
-                    }); */
+                    //slider.scrollBy({
+                    //    top: cellheight * (daysToLoad / 7),
+                    //    left: 0,
+                    //    behavior: "smooth",
+                    //});
                     // Scroller SCROLLBY
                 }
 
@@ -331,39 +339,50 @@ export default defineComponent({
         } // end f(): Generate Calendar Days
 
         const OnScroll = () => {
-            //
+            UpdateCurrentMonth();
         }
 
         const onUpdateDataNext = (done: (data: any) => void) => {
             startDate = bottomDate;
-            endDate = addDays(bottomDate, daysToLoad);
+            endDate = addDays(bottomDate, newdaysToLoad);
             bottomDate = endDate;
 
             var newdata = GenerateForwardMonth(startDate, endDate, false);
 
-            topDate = addDays(topDate, daysToLoad);
+            topDate = addDays(topDate, newdaysToLoad);
 
             done(newdata);
         }
 
         const onUpdateDataPrevious = (done: (data: any) => void) => {
-            startDate = addDays(topDate, -daysToLoad);
+            startDate = addDays(topDate, -newdaysToLoad);
             endDate = topDate;
 
             var newdata = GenerateBackwardMonth(startDate, endDate, false);
 
-            bottomDate = addDays(bottomDate, -daysToLoad);
+            bottomDate = addDays(bottomDate, -newdaysToLoad);
 
             done(newdata);
         }
+        
+        const onDataUpdated = (data: any)  => {            
+            if(data.length > 0)
+            {    
+                for(var k=0; k < data.length; k++)
+                {
+                    if(data[k].date) {
+                        data[k].date = new Date(data[k].date);
+                    }
+                }
+
+                scrollerdata.value.splice(0);
+                scrollerdata.value = [...data];
+            }         
+        }
 
         onMounted(() => {
-            /* for (var f = 1; f < 200; f++) {
-                scrollerdata.value.push({
-                    id: f + 1
-                });
-            } */
             GenerateDays();
+            UpdateCurrentMonth();
         });
 
         return {
@@ -373,6 +392,7 @@ export default defineComponent({
             OnScroll,
             onUpdateDataNext,
             onUpdateDataPrevious,
+            onDataUpdated
         };
     }
 });
