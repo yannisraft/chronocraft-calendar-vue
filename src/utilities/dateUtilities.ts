@@ -19,7 +19,7 @@ export const twoDigitPad = (num: number): string => {
     return num < 10 ? ("0" + String(num)) : String(num);
 }
 
-export const formatDate = (date: Date, patternStr: string): string => {
+export const formatDate = (date: any, patternStr: string): string => {
     var monthNames = [
         "January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December"
@@ -72,13 +72,13 @@ export const formatDate = (date: Date, patternStr: string): string => {
         .replace('yyyy', yyyy)
         .replace('yy', yy)
         .replace('aaa', aaa);
-    
+
     if (patternStr.indexOf('MMM') > -1) {
         patternStr = patternStr
             .replace('MMMM', MMMM)
             .replace('MMM', MMM);
     }
-    
+
     return patternStr;
 }
 
@@ -149,7 +149,7 @@ export const enumerateStringDaysBetweenDates = (
 export const checkIfWeekendDay = (date: Date): boolean => {
     var isWeekend = false;
     var dayOfWeek = date.getDay();
-    isWeekend = (dayOfWeek === 6) || (dayOfWeek  === 0);
+    isWeekend = (dayOfWeek === 6) || (dayOfWeek === 0);
     return isWeekend;
 };
 /*
@@ -196,7 +196,7 @@ function formatDate(date, patternStr){
       .replace('ss', ss).replace('s', second)
       .replace('S', miliseconds)
       .replace('dd', dd).replace('d', day)
-      
+
       .replace('EEEE', EEEE).replace('EEE', EEE)
       .replace('yyyy', yyyy)
       .replace('yy', yy)

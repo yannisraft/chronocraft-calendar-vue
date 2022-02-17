@@ -9,95 +9,94 @@ header {
     min-height: 2vh;
     text-align: center;
     font-family: 'Quicksand', sans-serif;    
-  }
-
-  header h1 {
-    font-weight: 400;
-  }
-  
-  ul, ol {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    /* grid-gap: 0.35em; */
-    margin: 0 auto;
-    max-width: 64em;
-    padding: 0;
-  }
-  
-  li {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    list-style: none;
-    margin-left: 0;
-    font-size: calc(13px + (21 - 16) * ((100vw - 300px) / (1600 - 300)));
-  }
-  
-  ul.weekdays {
-    margin-bottom: 1em;
-  }
-  
-  ul.weekdays li {
-    height: 4vw;
-  }
-  
-  ol.scrollercontent li {
-    background-color: #eaeaea;
-    border: 1px solid #eaeaea;
-    height: 12vw;
-    max-height: 125px;
-
-    -webkit-user-select: none;  /* Chrome all / Safari all */
-    -moz-user-select: none;     /* Firefox all */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Likely future */      
-  }
-  
-  ul.weekdays abbr[title] {
-    border: none;
-    font-weight: 800;
-    text-decoration: none;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 500;
-  }
-
-  .litoday {
-    background-color: #ffe9e9 !important;
-  }
-
-.scrollercontent .cell span {
-    position: absolute;
-    top: 5pt;
-    left: 5pt;
-    font-size: 3vw;
-    color: #777;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 200;
 }
 
-  
-  @media all and (max-width: 800px) {
-    /* ul, ol {
-      grid-gap: .25em;
-    } */
-    
-    ul.weekdays li {
-      font-size: 0;
-    }
-    
-    ul.weekdays > li abbr:after {
-        content: attr(title);
-        font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
-      text-align: center;
-      }
-  }
+header h1 {
+font-weight: 400;
+}
 
-  @media all and (min-width: 1150px) {
+ul, ol {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+/* grid-gap: 0.35em; */
+margin: 0 auto;
+max-width: 64em;
+padding: 0;
+}
+
+li {
+display: flex;
+align-items: center;
+justify-content: center;
+list-style: none;
+margin-left: 0;
+font-size: calc(13px + (21 - 16) * ((100vw - 300px) / (1600 - 300)));
+}
+
+ul.weekdays {
+margin-bottom: 1em;
+}
+
+ul.weekdays li {
+height: 4vw;
+}
+
+ol.scrollercontent li {
+background-color: #eaeaea;
+border: 1px solid #eaeaea;
+height: 12vw;
+max-height: 125px;
+
+-webkit-user-select: none;  /* Chrome all / Safari all */
+-moz-user-select: none;     /* Firefox all */
+-ms-user-select: none;      /* IE 10+ */
+user-select: none;          /* Likely future */      
+}
+
+ul.weekdays abbr[title] {
+border: none;
+font-weight: 800;
+text-decoration: none;
+font-family: 'Quicksand', sans-serif;
+font-weight: 500;
+}
+
+.litoday {
+background-color: #ffe9e9 !important;
+}
+
+.scrollercontent .cell span {
+position: absolute;
+top: 5pt;
+left: 5pt;
+font-size: 3vw;
+color: #777;
+font-family: 'Quicksand', sans-serif;
+font-weight: 200;
+}
+
+
+@media all and (max-width: 800px) {
+/* ul, ol {
+    grid-gap: .25em;
+} */
+
+ul.weekdays li {
+    font-size: 0;
+}
+
+ul.weekdays > li abbr:after {
+    content: attr(title);
+    font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
+    text-align: center;
+    }
+}
+
+@media all and (min-width: 1150px) {
     .scrollercontent .cell span {
         font-size: 24pt !important;
     }
-  }
+}
 
 
 
-  

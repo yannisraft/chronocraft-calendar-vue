@@ -17,6 +17,17 @@ import { terser } from "rollup-plugin-terser";
 import autoprefixer from "autoprefixer";
 import typescript from 'rollup-plugin-typescript2';
 import css from 'rollup-plugin-css-only';
+import pkg from './package.json';
+
+const banner =
+    `
+ // ${pkg.name}
+ // ${pkg.description}
+ // ${pkg.repository.url}
+ // v${pkg.version}
+ // ${pkg.license} License
+`;
+
 
 const postcssConfigList = [
   postcssImport({
@@ -75,7 +86,8 @@ let postVueConfig = [
 ]
 
 if(process.env.SEP_CSS){
-  postVueConfig = [css({ output: './dist/bundle.css' }), ...postVueConfig]
+  //postVueConfig = [css({ output: './dist/bundle.css' }), ...postVueConfig]
+  postVueConfig = [css({ output: 'bundle.css' }), ...postVueConfig]
 }
 
 const baseConfig = {
@@ -94,6 +106,7 @@ const baseConfig = {
       })
     ],
     replace: {
+        preventAssignment: true,
       "process.env.NODE_ENV": JSON.stringify("production"),
       __VUE_OPTIONS_API__: JSON.stringify(true),
       __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
@@ -140,11 +153,11 @@ const components = fs
   );
 
 const entriespath = {
-  index: "./src/index.ts"/* ,
+  index: "./src/index.ts",
   ...components.reduce((obj, name) => {
     obj[name] = baseFolder + componentsFolder + name + "/index.ts";
     return obj;
-  }, {}) */
+  }, {})
 };
 
 const capitalize = s => {
@@ -164,7 +177,8 @@ const mapComponent = name => {
         name: capitalize(name),
         file: `dist/components/${name}/index.ts`,
         exports: "named",
-        globals
+        globals,
+        banner: banner
       },
       plugins: [
         typescript(),
@@ -187,7 +201,8 @@ if (!argv.format || argv.format === "es") {
     external,
     output: {
       format: "esm",
-      dir: "dist/esm"
+      dir: "dist/esm",
+      banner: banner
     },
     plugins: [
       typescript(),
@@ -208,7 +223,8 @@ if (!argv.format || argv.format === "es") {
     external,
     output: {
       format: "esm",
-      file: "dist/vuelib.esm.js"
+      file: `dist/${pkg.buildname}.esm.js`,
+      banner: banner
     },
     plugins: [
       typescript(),
@@ -238,11 +254,12 @@ if (!argv.format || argv.format === "iife") {
     external,
     output: {
       compact: true,
-      file: "dist/vuelib-browser.min.js",
+      file: `dist/${pkg.buildname}-browser.min.js`,
       format: "iife",
-      name: "vuelib",
+      name: `${pkg.buildname}`,
       exports: "named",
-      globals
+      globals,
+      banner: banner
     },
     plugins: [
       typescript(),
@@ -272,7 +289,8 @@ if (!argv.format || argv.format === "cjs") {
       format: "cjs",
       dir: "dist/cjs",
       exports: "named",
-      globals
+      globals,
+      banner: banner
     },
     plugins: [
       typescript(),

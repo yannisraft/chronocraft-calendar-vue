@@ -1,123 +1,80 @@
 <template>
-<!-- <Calendar @on-scroll="OnScroll" :weekendcolored="true"> -->
-<!-- <template v-slot:header="slotProps">
-            <h1>{{ slotProps.headerlabel }}</h1>
-        </template> -->
-<!-- <template v-slot:headercell="slotProps">
-        <span>{{ slotProps.daylabel.short }}</span>
-    </template> -->
-<!-- <template v-slot:daycell="slotProps">
-        <span>{{ slotProps.day.num }}</span>
-    </template> -->
-<!-- </Calendar> -->
-<Scroller orientation="horizontal" :cellwidth="200" :numcols="4" :numrows="4" :contentpadding="30" :wheelscrollspeed="20" :data="scrollerdata" :cellsquared="true" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
-    <!-- <template v-slot:cell="">            
-        </template>  -->
-</Scroller>
-<div style="padding-top: 50px;">
-    <button class="btndemo">Click Me</button>
-</div>
+<h1>ChronoCraft Calendar Test Playground</h1>
+<Calendar @on-scroll="OnScroll" :weekendcolored="true" class="calendar" :height="400"></Calendar>
 </template>
 
-<script>
-import Calendar from "./components/calendar/Calendar.vue";
-import Scroller from "./components/scroller/Scroller.vue";
+<script lang="ts">
+import {
+    defineComponent
+} from 'vue';
+import Calendar from './components/Calendar/Calendar.vue';
 
-export default {
-    name: "App",
-    data: function () {
-        return {
-            scrollerdata: [],
-            lastid: 10000
-        }
-    },
+export default defineComponent({
+    name: 'App',
     components: {
-        Calendar,
-        Scroller
+        Calendar
     },
     methods: {
         OnScroll() {
             //
-        },
-        onUpdateDataNext(done) {
-            console.log('update-next');
-
-            var newdata = [];
-            for (var f = this.lastid; f < this.lastid + 20; f++) {
-                newdata.push({
-                    id: f + 1
-                });
-            }
-
-            this.lastid = this.lastid+20;
-
-            done(newdata);
-        },
-        onUpdateDataPrevious(done) {
-            console.log('update-previous');
-
-            var newdata = [];
-            for (var f = this.lastid; f < this.lastid + 20; f++) {
-                newdata.push({
-                    id: f + 1
-                });
-            }
-
-            this.lastid = this.lastid + 20;
-
-            done(newdata);
         }
-    },
-    mounted() {
-        for (var f = this.lastid; f < this.lastid + 60; f++) {
-            this.scrollerdata.push({
-                id: f + 1
-            });
-        }
-        this.lastid = this.lastid + 120;
     }
-};
+});
 </script>
 
 <style>
 #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Advent Pro', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
-    -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-.btndemo {
-    background: rgb(225,231,240);
-    background: -moz-linear-gradient(0deg, rgba(225,231,240,1) 0%, rgba(239,244,251,1) 100%);
-    background: -webkit-linear-gradient(0deg, rgba(225,231,240,1) 0%, rgba(239,244,251,1) 100%);
-    background: linear-gradient(0deg, rgba(225,231,240,1) 0%, rgba(239,244,251,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e1e7f0",endColorstr="#eff4fb",GradientType=1);
-    padding: 10px 20px 10px 20px;
-    font-family: 'Century Gothic';
-    border-radius: 7px;
+h1 {
+    font-weight: 400 !important;
+}
+
+.calendar {
+  max-width: 900px;
+  margin: 0px auto;
+}
+
+.widget-container {
     border: 0px solid;
-    border-bottom: 1px solid #a0adbb;
-    box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
-    
+    box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
+    text-indent: 10px;
+    font-size: 16pt;
+    padding: 20px;
+    margin: 0px auto;
+    max-width: 50%;
+    margin-bottom: 20px;
+    position: relative;
 }
 
-.btndemo:hover {
-    background: rgb(230,236,245);
-    background: -moz-linear-gradient(0deg, rgba(230,236,245,1) 0%, rgba(246,250,255,1) 100%);
-    background: -webkit-linear-gradient(0deg, rgba(230,236,245,1) 0%, rgba(246,250,255,1) 100%);
-    background: linear-gradient(0deg, rgba(230,236,245,1) 0%, rgba(246,250,255,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e6ecf5",endColorstr="#f6faff",GradientType=1);
+.widget-container h3 {
+    margin-top: 10px;
+    font-family: 'Advent Pro', sans-serif;
+    font-weight: 300 !important;
 }
 
-.btndemo:active {
-    background: #d2d8df;
-    margin-top: 1px;
-    border-bottom: 0px solid;
-    box-shadow: 0px 2px 1px rgba(0,0,0,0.2);
+.madewith {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12pt;
+}
+
+@media screen and (max-width: 600px) {
+    .widget-container {
+        max-width: 90%;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .widget-container {
+        max-width: 70%;
+    }
 }
 </style>
