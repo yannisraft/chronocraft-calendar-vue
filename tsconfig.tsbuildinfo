@@ -297,8 +297,8 @@
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "27de3afb7930546aa988d39280c0129767b980eafbc08e4f0e5ec344d04ca984",
-        "signature": "3277828dd30da848740f29960ffd5480bbd1a8e4c9db05d1473973f6b2d3237f",
+        "version": "f343966552177c567844724c40ddc3a625ed86d3a8f742f867c6fc147b7e66be",
+        "signature": "2dfa6cd7e747d43a1cea43263c4cf5c93012f93c2a27f169a97b200bde5834b3",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/index.ts": {
@@ -317,18 +317,18 @@
         "affectsGlobalScope": false
       },
       "./src/App.vue.ts": {
-        "version": "f660670bb93fd24f9d2f6fd27cdba6d65ae26332371b3f37ad9b34b2eb471be2",
+        "version": "a561d4784ca0b6e11889564d7eb89f0b4a6745b4f3ebfeedb64588860d9f2c77",
         "signature": "e85c330fe3b0d60f4776b0e4da24f531bedf12c211957cc84da456ca63ad6bab",
         "affectsGlobalScope": false
       },
       "./src/main.ts": {
-        "version": "ade4e6ade0df33597d58ee6ce74a8dab8a3b741914ad5b699f78dfc302a26a2b",
+        "version": "50cb9f18b1c7115799ae456f0d0038840278b49ea520b5549d468ec76c248fb9",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
       "./src/shims-vue.d.ts": {
-        "version": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
-        "signature": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
+        "version": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
+        "signature": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
         "affectsGlobalScope": false
       },
       "./src/components/CountDownTimer/index.ts": {
@@ -342,7 +342,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/HelloWorld.vue.ts": {
-        "version": "d577430b1f5275d39c00c73ac0d68722f77f7f4b14c2777199e6e7163f0c5c9c",
+        "version": "e5f3f27f3e873cdacd1b77c6adc5fd6bb1880d318c862dab47ecffebacbb19e6",
         "signature": "b130b560af1842db4e02a1fed469d4138acdfa7a37458259d33cd3632d747fc8",
         "affectsGlobalScope": false
       },
@@ -417,7 +417,7 @@
         "affectsGlobalScope": false
       },
       "./tests/unit/example.spec.ts": {
-        "version": "ff4d67073269cb7c417ab7aa511d6c5e58e2648280b49a2d9b05f0ae2aae9781",
+        "version": "dd2340e8e722bf60bdffeb4ec561a85381a79f876dc7db1d6493afd2e9fb09fd",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
@@ -498,7 +498,7 @@
         "lib.scripthost.d.ts"
       ],
       "inlineSourceMap": false,
-      "pathsBasePath": "F:/DEVELOPMENT/ChronoCraft/Calendar/chronocraft-calendar-vue",
+      "pathsBasePath": "D:/INHOUSE/ChronoCraft/Calendar/chronocraft-calendar-vue",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {

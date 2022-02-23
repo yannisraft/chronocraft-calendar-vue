@@ -13,11 +13,17 @@
         </li>
     </ul>
     <div class="scroller-container">
-        <Scroller :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :data="scrollerdata" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious" @on-data-updated="onDataUpdated">
+        <Scroller ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :data="scrollerdata" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious" @on-data-updated="onDataUpdated">
             <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgcolor }">
                 <div :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
                     <span>{{ slotProps.data.num }}</span>
+                    <div class="cell-events-container">
+                        <div v-for="event in slotProps.data.events" :key="event.id" class="event" :style="{'background-color': event.color}">
+                            <label>{{ event.title }}</label>
+                        </div>
+                    </div>
                 </div>
+
             </template>
         </Scroller>
     </div>
@@ -132,20 +138,65 @@ export default defineComponent({
                     },
                 ];
             },
+        },
+        events: {
+            type: Array,
+            default: () => {
+                return [{
+                        id: 1,
+                        title: "Event #1",
+                        color: "#f7a47d",
+                        description: "lalal and lololo koasda asd",
+                        startdate: new Date('2022-02-21T10:20:30Z'),
+                        enddate: new Date('2022-02-21T10:20:30Z'),
+                    },
+                    {
+                        id: 2,
+                        title: "Event #2",
+                        color: "#a1e762",
+                        description: "lalal and lololo koasda asd",
+                        startdate: new Date('2022-02-22T10:20:30Z'),
+                        enddate: new Date('2022-02-23T10:20:30Z'),
+                    },
+                    {
+                        id: 3,
+                        title: "Event #3",
+                        color: "#ffe087",
+                        description: "lalal and lololo koasda asd",
+                        startdate: new Date('2022-02-25T10:20:30Z'),
+                        enddate: new Date('2022-02-26T10:20:30Z'),
+                    },
+                    {
+                        id: 4,
+                        title: "Event #4",
+                        color: "#ffe087",
+                        description: "lalal and lololo koasda asd",
+                        startdate: new Date('2022-02-25T10:20:30Z'),
+                        enddate: new Date('2022-02-26T10:20:30Z'),
+                    },
+                    {
+                        id: 5,
+                        title: "Event #5",
+                        color: "#ffe087",
+                        description: "lalal and lololo koasda asd",
+                        startdate: new Date('2022-02-25T10:20:30Z'),
+                        enddate: new Date('2022-02-26T10:20:30Z'),
+                    },
+                    {
+                        id: 6,
+                        title: "Event #6",
+                        color: "#a1e762",
+                        description: "lalal and lololo koasda asd",
+                        startdate: new Date('2022-02-18T10:20:30Z'),
+                        enddate: new Date('2022-02-21T10:20:30Z'),
+                    }
+                ];
+            },
         }
     },
     setup(props, context) {
         let monthLabel = ref("");
-        /* let scrollerdata = ref <Array<{
-            id: String,
-            date: Date,
-            events: Array < String > ,
-            num: String,
-            today: Boolean,
-            weekend: Boolean,
-            bgcolor: String,
-        }>> (props.data); */
-        let scrollerdata:any = ref(props.data);
+        let scrollerdata: any = ref(props.data);
         let newcellslength = 30;
         let bottomDate: any = null;
         let topDate: any = null;
@@ -153,9 +204,11 @@ export default defineComponent({
         let endDate: any = null;
         let initialdaysToLoad = 70;
         let newdaysToLoad = 28;
+        let eventscache: any = {};
+        const scrollerref: any = ref(null);
 
         function UpdateCurrentMonth() {
-            let middledateIndex: number = Math.round((scrollerdata.value.length / 2) - 1);            
+            let middledateIndex: number = Math.round((scrollerdata.value.length / 2) - 1);
             if (scrollerdata.value[middledateIndex]) {
                 var middledate: any = scrollerdata.value[middledateIndex].date;
 
@@ -176,8 +229,6 @@ export default defineComponent({
             );
         }
 
-        
-
         function GenerateForwardMonth(start: any, end: any, atInitialization: Boolean) {
             var fdates = enumerateDaysBetweenDates(start, end);
             var daystoadd = [];
@@ -190,12 +241,13 @@ export default defineComponent({
                         today = true;
                     }
 
+                    var formatted_date = formatDate(date_a, "dd-MMM-yyyy");
                     daystoadd.push({
-                        id: formatDate(date_a, "dd-MMM-yyyy"),
+                        id: formatted_date,
                         date: date_a,
                         //num: formatDate(date_a, 'dd EEE MM'),
                         num: formatDate(date_a, "dd"),
-                        events: [],
+                        events: GetSpecificDateEvents(formatted_date),
                         today: today,
                         weekend: checkIfWeekendDay(date_a),
                         bgcolor: GetMonthColor(date_a.getMonth()),
@@ -221,12 +273,13 @@ export default defineComponent({
                         today = true;
                     }
 
+                    var formatted_date = formatDate(date_b, "dd-MMM-yyyy");
                     daystoadd.push({
-                        id: formatDate(date_b, "dd-MMM-yyyy"),
+                        id: formatted_date,
                         date: date_b,
                         //num: formatDate(date_b, 'dd EEE MM'),
                         num: formatDate(date_b, "dd"),
-                        events: [],
+                        events: GetSpecificDateEvents(formatted_date),
                         today: today,
                         weekend: checkIfWeekendDay(date_b),
                         bgcolor: GetMonthColor(date_b.getMonth()),
@@ -247,12 +300,45 @@ export default defineComponent({
 
             colorIndex = monthnum % max;
 
-            if(props.monthcolorvariations[colorIndex])
-            {
+            if (props.monthcolorvariations[colorIndex]) {
                 color = (String)(props.monthcolorvariations[colorIndex]);
             }
 
             return color;
+        }
+
+        function UpdateEvents() {
+
+            //TODO
+            //TODO
+            //TODO
+            if (props.events.length > 0) {
+                for (var t = 0; t < props.events.length; t++) {
+                    let event: any = props.events[t];
+
+                    var dateStr = formatDate(event.startdate, "dd-MMM-yyyy");
+                    if (eventscache.hasOwnProperty(dateStr) && typeof eventscache[dateStr] !== 'undefined') {
+                        eventscache[dateStr].push(event);
+                        console.log("dateStr: ", dateStr);
+                        console.log("exists: ", eventscache[dateStr]);
+                        console.log("exists typeof: ", eventscache[dateStr]);
+                    } else {
+                        eventscache[dateStr] = [event];
+                    }                    
+                }
+            }
+        }
+
+        function GetSpecificDateEvents(formatted_date: string) {
+            let newdate_events: any = [];
+            if (eventscache.hasOwnProperty(formatted_date) && typeof eventscache[formatted_date] !== 'undefined') {
+                console.log('formatted_date: ', formatted_date);
+                if (eventscache[formatted_date].length > 0) {
+                    newdate_events = [...eventscache[formatted_date]];
+                }
+            }
+
+            return newdate_events;
         }
 
         function GenerateDays() {
@@ -261,6 +347,7 @@ export default defineComponent({
             let day = d.getDay();
 
             var initialDays = [];
+            var today_id = '';
 
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
@@ -268,14 +355,16 @@ export default defineComponent({
                 newdate = addDays(newdate, -b);
 
                 var today = false;
+                var formatted_date = formatDate(newdate, "dd-MMM-yyyy");
                 if (ISToday(newdate)) {
                     today = true;
+                    today_id = formatted_date;
                 }
 
                 let _daytopush: any = {
-                    id: formatDate(newdate, "dd-MMM-yyyy"),
+                    id: formatted_date,
                     date: newdate,
-                    events: [],
+                    events: GetSpecificDateEvents(formatted_date),
                     num: formatDate(newdate, "dd"),
                     today: today,
                     weekend: checkIfWeekendDay(newdate),
@@ -288,13 +377,14 @@ export default defineComponent({
             // 2. Add forward days
             var forwarddaystoload = 6 - day;
             for (var f = 1; f <= forwarddaystoload; f++) {
-                var newdate_f = new Date(d.getTime());
+                var newdate_f = new Date(d.getTime());                
                 newdate_f = addDays(newdate_f, f);
+                var formatted_date_f = formatDate(newdate_f, "dd-MMM-yyyy");
 
                 initialDays.push({
-                    id: formatDate(newdate_f, "dd-MMM-yyyy"),
+                    id: formatted_date_f,
                     date: newdate_f,
-                    events: [],
+                    events: GetSpecificDateEvents(formatted_date_f),
                     num: formatDate(newdate_f, "dd"),
                     today: false,
                     weekend: checkIfWeekendDay(newdate_f),
@@ -305,7 +395,7 @@ export default defineComponent({
             // 3. Now add forward 1 month
             var lastdate: any = initialDays[initialDays.length - 1].date;
             var lastmonthdate: any = addDays(lastdate, Math.round(initialdaysToLoad));
-            var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);            
+            var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);
             initialDays = [...initialDays, ...daystoadd];
 
             // 3. Now add backward 1 month
@@ -319,23 +409,16 @@ export default defineComponent({
 
             scrollerdata.value.push(...initialDays);
 
-            // 4. Scroll to match today
+            // 4. Scroll today date
             setTimeout(() => {
-                const cell = document.querySelector(".cell");
-                if (cell) {
-                    let cellheight = (cell as HTMLInputElement).offsetHeight + props.gap;
-                    //slider.scrollBy({
-                    //    top: cellheight * (daysToLoad / 7),
-                    //    left: 0,
-                    //    behavior: "smooth",
-                    //});
-                    // Scroller SCROLLBY
+                if (today_id !== '') {
+                    var cellPosition = scrollerref.value.GetCellsPosition(today_id);
+                    scrollerref.value.ScrollTo(cellPosition);
                 }
-
             }, 1000);
 
             //UpdateCurrentMonth();
-            //UpdateEvents();
+
         } // end f(): Generate Calendar Days
 
         const OnScroll = () => {
@@ -364,23 +447,22 @@ export default defineComponent({
 
             done(newdata);
         }
-        
-        const onDataUpdated = (data: any)  => {            
-            if(data.length > 0)
-            {    
-                for(var k=0; k < data.length; k++)
-                {
-                    if(data[k].date) {
+
+        const onDataUpdated = (data: any) => {
+            if (data.length > 0) {
+                for (var k = 0; k < data.length; k++) {
+                    if (data[k].date) {
                         data[k].date = new Date(data[k].date);
                     }
                 }
 
                 scrollerdata.value.splice(0);
                 scrollerdata.value = [...data];
-            }         
+            }
         }
 
         onMounted(() => {
+            UpdateEvents();
             GenerateDays();
             UpdateCurrentMonth();
         });
@@ -389,6 +471,7 @@ export default defineComponent({
             monthLabel,
             scrollerdata,
             newcellslength,
+            scrollerref,
             OnScroll,
             onUpdateDataNext,
             onUpdateDataPrevious,
@@ -400,4 +483,8 @@ export default defineComponent({
 
 <style lang="css" scoped>
 @import "./calendar.css";
+</style><style>
+.scroller {
+    background: #ffffff !important;
+}
 </style>

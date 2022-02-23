@@ -66,6 +66,7 @@ h1 {
     font-size: 12pt;
 }
 
+
 @media screen and (max-width: 600px) {
     .widget-container {
         max-width: 90%;
