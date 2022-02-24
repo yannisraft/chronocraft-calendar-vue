@@ -1,6 +1,6 @@
 <template>
 <h1>ChronoCraft Calendar Test Playground</h1>
-<Calendar @on-scroll="OnScroll" :weekendcolored="true" class="calendar" :height="400"></Calendar>
+<Calendar @on-scroll="OnScroll" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400"></Calendar>
 </template>
 
 <script lang="ts">

@@ -1,2 +1,2 @@
-import { addDays, getDiff, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateStringDaysBetweenDates, checkIfWeekendDay, daysMatch } from "./dateUtilities";
-export { addDays, getDiff, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateStringDaysBetweenDates, checkIfWeekendDay, daysMatch };
+import { addDays, getDiff, getDiffInDays, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateStringDaysBetweenDates, checkIfWeekendDay, daysMatch } from "./dateUtilities";
+export { addDays, getDiff, getDiffInDays, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateStringDaysBetweenDates, checkIfWeekendDay, daysMatch };
