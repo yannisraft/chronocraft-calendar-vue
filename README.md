@@ -1,41 +1,18 @@
-# Chronocraft VueJS 3.0 Library Template
-A VueJS 3.0 building template to create your own components library.
+# Chronocraft Calendar for VueJS 3.0 Component
+The Chronocraft Calendar is a Vue 3 flexible infinite scrolling calendar component created for Vue3.
+It includes an events functionality and a smooth infinite scrolling feel with drag and mouse wheel navigation
 
 ### Features
-- Vuejs 3.0 Based Library Template
+- Infinite Calendar
+- Events Functionality
+- Different type of events
+- Add or Remove events
 - Typescript support
-- Using Rollup to create final bundle ( based on shubhadip rollup setup [shubhadip/vue3-component-library](https://github.com/shubhadip/vue3-component-library) )
-- Using PostCSS to include CSS Files
-- Minified Build
-- Includes VuePress for documenting your library
+- Smooth scrolling
 
-# Library Project Documentaation
-This is a guide of how to setup and build your library project
-Multiple components can be included in the library.
+## Usage of Calendar
 
-### Including your components
-Each component has a seperated folder add inside the components folder.
-Inside each component's folder, its **.vue** file and **.css** files are included. In addition an **index.ts** file
-exports the specified component in the final bundle.
-
-Each of there Components are also included as exports in the **index.ts** file located inside the **/components** folder
-
-### Initializing the Project
-```javascript
-npm run install
-```
-
-### Building the library
-```javascript
-npm run build
-```
-
-## Using the library after being built
-
-#### Using the library as a Plugin
-
-At the VueJS Initialization on the main.ts or .js file of the project
-add the following.
+Using the Library as a Plugin
 
 ```javascript
 import { ChronoCraftCalendar } from 'chronocraft-calendar-vue';
@@ -55,17 +32,40 @@ Calendar
 }
 ```
 
-## Playing with the VuePress Documentation
 
-In order to run the Vuepress development server
-
-```javascript
-npm run docs:dev
+#### Example of Component
+```html
+<Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400"></Calendar>
 ```
 
-
-In order to build the final docs
-
-```javascript
-npm run docs:build
+#### Example using Cell Slot
+```html
+<Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
+    <template v-slot:header="slotProps">
+        <span>{{ slotProps.headerlabel }}</span>
+    </template>
+    <template v-slot:headercell="slotProps">
+        <span>{{ slotProps.daylabel }}</span>
+    </template>
+</Calendar>
 ```
+
+### Component properties
+
+|  Name  | Type  | Description  |
+|---|---|---|
+|  data  |  Array  |  The actual data passed into the scroller. These data are reactive by using ref() |
+|  height    |  Number  |  Defines the height of the calendar |
+|  gap    |  Number  |  Defines the gap between the calendar cells / days  |
+|  wheelscrollspeed  |  Number  |  Defines the mouse wheel scroll speed  |
+|  cellheight    |  Number  |  Defines the base of the cellheight on the horizontal scroller  |
+|  hasscrollbar  |  Boolean  |  Defines if the scroller should have a scroll bar  |
+|  @on-scroll  |  Event Function   | Event fired when the user has scrolled    |
+|  @on-delete-event  |  Event Function  |  Event fired when the user has reached at the end of the scroller and new data might be required to load  |
+
+### Component slots
+
+|  Name  | hasprops  | Description  |
+|---|---|---|
+|  header  | yes  | Overrides the calendar's header
+|  headercell  | yes  | Overrides the calendar's header cells which now show the day names

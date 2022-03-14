@@ -65,6 +65,8 @@ ul.weekdays abbr[title] {
     font-weight: 500;
 }
 
+
+
 .litoday {
     background-color: #f1e0d8 !important;
 }
@@ -145,6 +147,8 @@ ul.weekdays abbr[title] {
     align-items: center;
     text-align: left;    
     display: inline-flex;
+    z-index: 1000;
+    cursor: pointer;
 
     -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
@@ -154,6 +158,7 @@ ul.weekdays abbr[title] {
 .event label {
     font-family: 'Quicksand', sans-serif;
     padding-left: 10px;
+    cursor: pointer;
 }
 
 .cell-events-more {
@@ -162,6 +167,101 @@ ul.weekdays abbr[title] {
     font-size: 10pt;
     font-weight: 400;
     right: 5px;
+}
+
+.tooltippanel {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    border-radius: 5px;
+    z-index: 100000000;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.tooltiphidden {
+    display: none;
+}
+
+.infopanel {
+    background-color: #fff;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    border-radius: 5px;
+    width: 50%;
+    height: 35%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    visibility: visible;
+    opacity: 1;
+    /* transition: opacity 0.5s ease-in; */
+    transition: all 0.5s linear;
+    pointer-events: auto; 
+}
+
+.infopanel h4 {
+    margin: 15px 15px 5px 15px;
+    text-align: left;
+}
+
+.infopanel .dotevent {
+    margin: 8px 15px 8px 15px;
+    position: relative;
+}
+
+.infopanel .dotevent h6 {
+    display: inline;
+    margin: 0px 15px 0px 15px;
+    text-align: left;
+    position: absolute;
+    top: -4px;
+    font-size: 10pt;
+}
+
+.infodate {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 11pt;
+    font-weight: 200;
+}
+
+.infopanel p {
+    margin: 4px 15px 10px 15px;
+    text-align: left;
+    flex: 1;
+  
+    white-space: wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display:-webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient:vertical;
+}
+
+
+.infopanelhidden {
+    visibility: hidden;
+    opacity: 0;
+    /* transition: opacity 0.5s ease-out;
+    transition: visibility 1.0s ease-out; */
+    transition: all 0.35s linear;
+    transform: translate(-50%, 100%);
+}
+
+.deletebtn {
+    border: 0px solid;
+    background: none;
+    position: absolute;
+    bottom: 10px;
+    right: 5px;
+    cursor: pointer;
 }
 
 @media all and (max-width: 800px) {

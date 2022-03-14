@@ -157,3 +157,28 @@ export const checkIfWeekendDay = (date: Date): boolean => {
     isWeekend = (dayOfWeek === 6) || (dayOfWeek === 0);
     return isWeekend;
 };
+
+export const deepCopy = (objectToBeCloned: any) => {
+    let resultObj, value, key
+
+    if (typeof objectToBeCloned !== "object" || objectToBeCloned === null) {
+        return objectToBeCloned
+    }
+
+    if (typeof objectToBeCloned === "object") {
+        if (objectToBeCloned.constructor.name !== "Object") {
+            resultObj = new objectToBeCloned.constructor(objectToBeCloned)
+        } else {
+            resultObj = Array.isArray(objectToBeCloned) ? [] : {}
+        }
+    }
+
+    for (key in objectToBeCloned) {
+        value = objectToBeCloned[key]
+
+        // Recursively copy for nested objects & arrays
+        resultObj[key] = deepCopy(value)
+    }
+
+    return resultObj
+}
