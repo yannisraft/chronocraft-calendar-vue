@@ -49,6 +49,7 @@
     "vue": "^3.2.30"
   },
   "dependencies": {
+    "chronocraft-datepicker-vue": "^0.0.2",
     "core-js": "^3.6.5"
   },
   "devDependencies": {

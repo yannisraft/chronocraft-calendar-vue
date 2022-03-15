@@ -38,7 +38,7 @@ Calendar
 <Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400"></Calendar>
 ```
 
-#### Example using Cell Slot
+#### Example using Slots
 ```html
 <Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
     <template v-slot:header="slotProps">

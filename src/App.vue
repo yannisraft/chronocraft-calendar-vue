@@ -1,12 +1,12 @@
 <template>
 <h1>ChronoCraft Calendar Test Playground</h1>
 <Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
-    <template v-slot:header="slotProps">
+    <!-- <template v-slot:header="slotProps">
         <span>{{ slotProps.headerlabel }}</span>
     </template>
     <template v-slot:headercell="slotProps">
-        <span>{{ slotProps.daylabel }}</span>
-    </template>
+        <span>{{ slotProps.daylabel.title }}</span>
+    </template> -->
 </Calendar>
 <button @click="RemoveEvent(7)">Remove</button>
 <button @click="AddEvent()">Add</button>
@@ -220,5 +220,9 @@ h1 {
     .widget-container {
         max-width: 70%;
     }
+}
+
+.datepicker-panel {
+    z-index: 100000000;
 }
 </style>

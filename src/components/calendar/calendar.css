@@ -65,7 +65,9 @@ ul.weekdays abbr[title] {
     font-weight: 500;
 }
 
-
+.calendar-container {
+    position: relative;
+}
 
 .litoday {
     background-color: #f1e0d8 !important;
@@ -262,6 +264,11 @@ ul.weekdays abbr[title] {
     bottom: 10px;
     right: 5px;
     cursor: pointer;
+}
+
+.calendar-datepicker {
+    position: absolute;
+    right: 20px;
 }
 
 @media all and (max-width: 800px) {

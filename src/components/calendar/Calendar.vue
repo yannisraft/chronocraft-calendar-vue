@@ -3,6 +3,11 @@
     <header>
         <slot :headerlabel="monthLabel" name="header">
             <h1>{{ monthLabel }}</h1>
+            <DatePicker :rangepicker="false" :showselecteddate="true" class="calendar-datepicker" @on-date-selected="OnDateSelected">
+                <template v-slot:inputfield="slotProps">
+                    <span class="material-icons-outlined" style="cursor: pointer;">date_range</span>
+                </template>
+            </DatePicker>
         </slot>
     </header>
     <ul class="weekdays">
@@ -37,9 +42,11 @@
             </template>
             <template v-slot:overlay>
                 <div ref="infopanelref" :class="['infopanel', {infopanelhidden: infopanelhidden}]">
-                    <h4>{{ infopanel_title }}</h4>                    
-                    <div class="infodate">{{ infopanel_date }}</div> 
-                    <div class="dotevent" style="background-color: #f7a47d;"><h6>Type: <span></span></h6></div>                   
+                    <h4>{{ infopanel_title }}</h4>
+                    <div class="infodate">{{ infopanel_date }}</div>
+                    <div class="dotevent" style="background-color: #f7a47d;">
+                        <h6>Type: <span></span></h6>
+                    </div>
                     <p>{{ infopanel_description }}</p>
                     <button class="deletebtn" @click="RemoveEventwithID(infopanel_eventid)"><span class="material-icons-outlined">delete</span></button>
                 </div>
@@ -70,6 +77,10 @@ import {
 } from 'chronocraft-scroller-vue';
 
 import {
+    DatePicker
+} from 'chronocraft-datepicker-vue';
+
+import {
     enumerateDaysBetweenDates,
     formatDate,
     addDays,
@@ -83,7 +94,8 @@ import {
 export default defineComponent({
     name: 'App',
     components: {
-        Scroller
+        Scroller,
+        DatePicker
     },
     props: {
         data: {
@@ -224,66 +236,7 @@ export default defineComponent({
         let infopanel_description = ref("");
         let infopanel_date = ref("");
         let infopanel_eventid = ref("");
-
-        // Computed
-        /* const EventsStartFrom = computed((cellevents: Array < any > , date: Date) => {
-            let final: Array < any > = [];
-
-            console.log(cellevents);
-
-            if (cellevents.length > 0) {
-                for (var f = 0; f < cellevents.length; f++) {
-                    if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
-                        if (cellevents[f].index < fiteventsnumber.value) {
-                            if (daysMatch(cellevents[f].startdate, date)) {
-                                final.push(cellevents[f]);
-                            } else {
-                                if (date.getDay() === 0) {
-                                    //console.log("day: ", date.getDay());
-                                    //console.log(cellevents[f]);
-                                    let days = getDiffInDays(cellevents[f].enddate, date);
-                                    if (days > 0) {
-                                        final.push(cellevents[f]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return final;
-        }); */
-
-        // Method
-        /* function EventsStartFrom(cellevents: Array < any > , date: Date, celldata: any) {
-            let final: Array < any > = [];
-
-            if (cellevents.length > 0) {
-                for (var f = 0; f < cellevents.length; f++) {
-                    if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
-                        if (cellevents[f].index < fiteventsnumber.value) {
-                            if (daysMatch(cellevents[f].startdate, date)) {
-                                final.push(cellevents[f]);
-                            } else {
-                                if (date.getDay() === 0) {
-                                    //console.log("day: ", date.getDay());
-                                    //console.log(cellevents[f]);
-                                    let days = getDiffInDays(cellevents[f].enddate, date);
-                                    if (days > 0) {
-                                        final.push(cellevents[f]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            //celldata.visibleevents = final;
-
-            return final;
-        } */
+        let scrollanimate = ref(0);
 
         function DotEventsStartFrom(cellevents: Array < any > , date: Date) {
             let final: Array < any > = [];
@@ -700,7 +653,7 @@ export default defineComponent({
 
             let totaleventsonmore = DotEventsStartFrom(events, date).length;
             //let totaleventsonmore = eventsFilterNonVisible({events: events, date: date}).length;
-            
+
             /* if (events.length > 0 && fiteventsnumber.value > 0) {
                 for (var f = 0; f < events.length; f++) {
                     if (events[f].index !== null && typeof events[f].index !== 'undefined') {
@@ -753,13 +706,11 @@ export default defineComponent({
         }
 
         function RemoveEventwithID(eventid: string) {
-            if(eventid)
-            {
+            if (eventid) {
                 context.emit("on-delete-event", eventid);
                 infopanelhidden.value = true;
             }
         }
-
 
         const OnScroll = () => {
             infopanelhidden.value = true;
@@ -802,19 +753,31 @@ export default defineComponent({
             }
         }
 
+        const OnDateSelected = (selected: any) => {
+            ScrollToDate(selected.date);
+        }
+
+        const ScrollToDate = (date: any) => {
+            // If date is loaded inside current calendar dates
+            var formatted_date = formatDate(date, "dd-MMM-yyyy");
+            var cellPosition = scrollerref.value.GetCellsPosition(formatted_date);
+
+            if(cellPosition >= 0)
+            {
+                scrollerref.value.ScrollTo(cellPosition);
+            } else {
+                console.log("Date Outside Loaded Dates");
+            }
+        }
+
         const GetColor = (event: any) => {
             let color = "#fff";
-            if(event)
-            {
-                if(event.type)
-                {
-                    if(props.eventtypes)
-                    {
-                        for(var f=0; f < props.eventtypes.length; f++)
-                        {
-                            let eventype:any = props.eventtypes[f];
-                            if(eventype.type === event.type)
-                            {
+            if (event) {
+                if (event.type) {
+                    if (props.eventtypes) {
+                        for (var f = 0; f < props.eventtypes.length; f++) {
+                            let eventype: any = props.eventtypes[f];
+                            if (eventype.type === event.type) {
                                 color = eventype.color;
                                 break;
                             }
@@ -900,27 +863,6 @@ export default defineComponent({
 
                 return final;
             };
-            /*
-            let final: Array < any > = [];
-            if (cellevents.length > fiteventsnumber.value) {
-                if (cellevents.length > 0) {
-                    if (cellevents.length > fiteventsnumber.value + 3) {
-                        final = cellevents.slice(fiteventsnumber.value, fiteventsnumber.value + 3);
-                    } else {
-                        final = cellevents.slice(fiteventsnumber.value, cellevents.length);
-                    }
-                }
-            } else {
-                // if shorter but there is an index with higher value
-                for (var f = 0; f < cellevents.length; f++) {
-                    if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
-                        if (cellevents[f].index >= fiteventsnumber.value) {
-                            final.push(cellevents[f]);
-                        }
-                    }
-                }
-            }
-            */
         });
 
         onMounted(() => {
@@ -964,6 +906,7 @@ export default defineComponent({
             infopanel_eventid,
             eventsFilterVisible,
             eventsFilterNonVisible,
+            scrollanimate,
             OnScroll,
             onUpdateDataNext,
             onUpdateDataPrevious,
@@ -973,6 +916,7 @@ export default defineComponent({
             RemoveEventwithID,
             DotEventsStartFrom,
             CalculateEventWidth,
+            OnDateSelected,
             ShowMorePanel,
             HideMorePanel,
             GetToolTipStyle,

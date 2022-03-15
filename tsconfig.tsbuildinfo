@@ -286,6 +286,11 @@
         "signature": "fbef6eaf18b86b562ce8be609966d3248c3e0618d02f0957560502cf49249e1a",
         "affectsGlobalScope": false
       },
+      "./node_modules/chronocraft-datepicker-vue/types/index.d.ts": {
+        "version": "f88b08de3ab2c309e1f96c71f59c38f926acca8808f582de1b9a950750bd2a20",
+        "signature": "f88b08de3ab2c309e1f96c71f59c38f926acca8808f582de1b9a950750bd2a20",
+        "affectsGlobalScope": false
+      },
       "./src/utilities/dateUtilities.ts": {
         "version": "5fe3487588baac032b8df1fd07859da3c897931f4cc8c92757eed50ec5f31cd5",
         "signature": "d67de67a436976570f655216ad212a1c1d9822410ade65b0354b931b6b0ab81a",
@@ -297,8 +302,8 @@
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "019fb5f8e6c6b8eaccd688dec5d8691838464597d25534601e7aa290daf67a85",
-        "signature": "b327e5c40294252cd3e47351844c9135574c9b5e4715f493d5ef6eaf2717ec21",
+        "version": "7f14bfbe1a3d9650508e6f76b4594196c9e4fa666a0060b6eba4652f2d6121c5",
+        "signature": "a2175a837e79e493ad1eab221c8916c0bd9a8e178425e2d429eaa03cbd57ea39",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/index.ts": {
@@ -317,7 +322,7 @@
         "affectsGlobalScope": false
       },
       "./src/App.vue.ts": {
-        "version": "aa108383eb82fbf16692028a5f65435d81a558a98dad2bf7771fead7cb390a0f",
+        "version": "984cef1ad696d30b4e944dc3235997b04da54f820f640211c7046ea4f9f97b9e",
         "signature": "d1c0802bb71247887dfe560354dcbb9b9f0d5b6a8fcab1f3192a482a1e2b732b",
         "affectsGlobalScope": false
       },
@@ -592,6 +597,9 @@
         "./node_modules/@vue/test-utils/dist/types.d.ts",
         "./node_modules/vue/dist/vue.d.ts"
       ],
+      "./node_modules/chronocraft-datepicker-vue/types/index.d.ts": [
+        "./node_modules/vue/dist/vue.d.ts"
+      ],
       "./node_modules/chronocraft-scroller-vue/types/index.d.ts": [
         "./node_modules/vue/dist/vue.d.ts"
       ],
@@ -624,6 +632,7 @@
         "./src/components/Calendar/Calendar.vue.ts"
       ],
       "./src/components/Calendar/Calendar.vue.ts": [
+        "./node_modules/chronocraft-datepicker-vue/types/index.d.ts",
         "./node_modules/chronocraft-scroller-vue/types/index.d.ts",
         "./node_modules/vue/dist/vue.d.ts",
         "./src/utilities/index.ts"
@@ -753,6 +762,9 @@
         "./node_modules/@vue/test-utils/dist/types.d.ts",
         "./node_modules/vue/dist/vue.d.ts"
       ],
+      "./node_modules/chronocraft-datepicker-vue/types/index.d.ts": [
+        "./node_modules/vue/dist/vue.d.ts"
+      ],
       "./node_modules/chronocraft-scroller-vue/types/index.d.ts": [
         "./node_modules/vue/dist/vue.d.ts"
       ],
@@ -838,6 +850,7 @@
       "./node_modules/@vue/test-utils/dist/utils/autoUnmount.d.ts",
       "./node_modules/@vue/test-utils/dist/utils/flushPromises.d.ts",
       "./node_modules/@vue/test-utils/dist/vueWrapper.d.ts",
+      "./node_modules/chronocraft-datepicker-vue/types/index.d.ts",
       "./node_modules/chronocraft-scroller-vue/types/index.d.ts",
       "./node_modules/csstype/index.d.ts",
       "./node_modules/jest-diff/build/cleanupSemantic.d.ts",
