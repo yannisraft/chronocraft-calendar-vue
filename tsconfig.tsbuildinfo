@@ -302,7 +302,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "7f14bfbe1a3d9650508e6f76b4594196c9e4fa666a0060b6eba4652f2d6121c5",
+        "version": "55f23af74009b23e9e9d422612cfa70cd1d6f6273aa7b6562bdc97cf2d11a536",
         "signature": "a2175a837e79e493ad1eab221c8916c0bd9a8e178425e2d429eaa03cbd57ea39",
         "affectsGlobalScope": false
       },
@@ -327,13 +327,13 @@
         "affectsGlobalScope": false
       },
       "./src/main.ts": {
-        "version": "50cb9f18b1c7115799ae456f0d0038840278b49ea520b5549d468ec76c248fb9",
+        "version": "ade4e6ade0df33597d58ee6ce74a8dab8a3b741914ad5b699f78dfc302a26a2b",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
       "./src/shims-vue.d.ts": {
-        "version": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
-        "signature": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
+        "version": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
+        "signature": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
         "affectsGlobalScope": false
       },
       "./src/components/CountDownTimer/index.ts": {
@@ -347,7 +347,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/HelloWorld.vue.ts": {
-        "version": "e5f3f27f3e873cdacd1b77c6adc5fd6bb1880d318c862dab47ecffebacbb19e6",
+        "version": "d577430b1f5275d39c00c73ac0d68722f77f7f4b14c2777199e6e7163f0c5c9c",
         "signature": "b130b560af1842db4e02a1fed469d4138acdfa7a37458259d33cd3632d747fc8",
         "affectsGlobalScope": false
       },
@@ -422,7 +422,7 @@
         "affectsGlobalScope": false
       },
       "./tests/unit/example.spec.ts": {
-        "version": "dd2340e8e722bf60bdffeb4ec561a85381a79f876dc7db1d6493afd2e9fb09fd",
+        "version": "ff4d67073269cb7c417ab7aa511d6c5e58e2648280b49a2d9b05f0ae2aae9781",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
@@ -503,7 +503,7 @@
         "lib.scripthost.d.ts"
       ],
       "inlineSourceMap": false,
-      "pathsBasePath": "D:/INHOUSE/ChronoCraft/Calendar/chronocraft-calendar-vue",
+      "pathsBasePath": "F:/DEVELOPMENT/ChronoCraft/Calendar/chronocraft-calendar-vue",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {

@@ -237,6 +237,7 @@ export default defineComponent({
         let infopanel_date = ref("");
         let infopanel_eventid = ref("");
         let scrollanimate = ref(0);
+        var today_id = '';
 
         function DotEventsStartFrom(cellevents: Array < any > , date: Date) {
             let final: Array < any > = [];
@@ -563,13 +564,11 @@ export default defineComponent({
             return newdate_events;
         }
 
-        function GenerateDays() {
-            // Initialize with Today
+        function GetInitialDays(basedate: any) {
+            var initialDays: any = [];
             let d = new Date();
+            if (basedate) d = basedate;
             let day = d.getDay();
-
-            var initialDays = [];
-            var today_id = '';
 
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
@@ -634,6 +633,83 @@ export default defineComponent({
             initialDays = [...daystoaddbackward, ...initialDays];
 
             // console.log(initialDays.length);
+
+            return initialDays;
+        }
+
+        function GenerateDays() {
+            // Initialize with Today
+            let d = new Date();
+            var initialDays = GetInitialDays(d);
+
+            //let day = d.getDay();
+
+            //var initialDays = [];
+            //var today_id = '';
+
+            /* // 1. Add backward days
+            for (var b = day; b >= 0; b--) {
+                var newdate = new Date(d.getTime());
+                newdate = addDays(newdate, -b);
+
+                var today = false;
+                var formatted_date = formatDate(newdate, "dd-MMM-yyyy");
+                if (ISToday(newdate)) {
+                    today = true;
+                    today_id = formatted_date;
+                }
+
+                let _daytopush: any = {
+                    id: formatted_date,
+                    date: newdate,
+                    hasdiv: false,
+                    events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, newdate),
+                    num: formatDate(newdate, "dd"),
+                    today: today,
+                    weekend: checkIfWeekendDay(newdate),
+                    bgcolor: GetMonthColor(newdate.getMonth()),
+                    visibleevents: [],
+                    dotevents: []
+                };
+
+                initialDays.push(_daytopush);
+            }
+
+            // 2. Add forward days
+            var forwarddaystoload = 6 - day;
+            for (var f = 1; f <= forwarddaystoload; f++) {
+                var newdate_f = new Date(d.getTime());
+                newdate_f = addDays(newdate_f, f);
+                var formatted_date_f = formatDate(newdate_f, "dd-MMM-yyyy");
+
+                initialDays.push({
+                    id: formatted_date_f,
+                    date: newdate_f,
+                    hasdiv: false,
+                    events: typeof eventscache[formatted_date_f] !== 'undefined' ? eventscache[formatted_date_f] : [], //GetSpecificDateEvents(formatted_date_f, newdate_f),
+                    num: formatDate(newdate_f, "dd"),
+                    today: false,
+                    weekend: checkIfWeekendDay(newdate_f),
+                    bgcolor: GetMonthColor(newdate_f.getMonth()),
+                    visibleevents: [],
+                    dotevents: []
+                });
+            }
+
+            // 3. Now add forward 1 month
+            var lastdate: any = initialDays[initialDays.length - 1].date;
+            var lastmonthdate: any = addDays(lastdate, Math.round(initialdaysToLoad));
+            var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);
+            initialDays = [...initialDays, ...daystoadd];
+
+            // 3. Now add backward 1 month
+            let firstdate: any = initialDays[0].date;
+            let firstdateofmonth: any = addDays(firstdate, Math.round(-initialdaysToLoad));
+            var daystoaddbackward = GenerateBackwardMonth(firstdateofmonth, firstdate, true);
+            //scrollerdata.value = [...daystoaddbackward, ...scrollerdata.value];
+            initialDays = [...daystoaddbackward, ...initialDays];
+
+            // console.log(initialDays.length); */
 
             scrollerdata.value.push(...initialDays);
 
@@ -762,11 +838,29 @@ export default defineComponent({
             var formatted_date = formatDate(date, "dd-MMM-yyyy");
             var cellPosition = scrollerref.value.GetCellsPosition(formatted_date);
 
-            if(cellPosition >= 0)
-            {
+            if (cellPosition >= 0) {
                 scrollerref.value.ScrollTo(cellPosition);
             } else {
                 console.log("Date Outside Loaded Dates");
+                //GenerateDays(date);
+                //this.$refs.scrollerref.SetAnimateNext(nextdata);
+                today_id = '';
+                var initialDays = GetInitialDays(date);
+                //scrollerdata.value = [];
+                //scrollerdata.value.push(...initialDays);
+                scrollerref.value.SetAnimateNext(initialDays, ()=>{
+                    UpdateCurrentMonth();
+                });
+
+                
+
+                // 4. Scroll today date
+                setTimeout(() => {
+                    if (today_id !== '') {
+                        var cellPosition = scrollerref.value.GetCellsPosition(today_id);
+                        scrollerref.value.ScrollTo(cellPosition);
+                    }
+                }, 1000);
             }
         }
 

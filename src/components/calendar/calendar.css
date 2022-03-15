@@ -271,6 +271,12 @@ ul.weekdays abbr[title] {
     right: 20px;
 }
 
+.preloaderimg {
+    background: url('./../../assets/preloader.png') no-repeat;
+    width: 64px;
+    height: 64px;
+}
+
 @media all and (max-width: 800px) {
     /* ul, ol {
     grid-gap: .25em;
