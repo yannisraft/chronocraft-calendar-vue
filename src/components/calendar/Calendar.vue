@@ -20,9 +20,9 @@
     <div class="container">
         <Scroller ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :data="scrollerdata" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious" @on-data-updated="onDataUpdated">
             <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgcolor }">
-                <div @click="CloseInfoPanel()" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
+                <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
                     <div class="cell-label-container">
-                        <span>{{ slotProps.data.num }}</span>
+                        <span class="cell-label-num">{{ slotProps.data.num }} <span class="cell-label-month">{{ slotProps.data.month }}</span></span>
                     </div>
                     <div class="cell-events-container">
                         <!-- <div @click="OpenInfoPanel($event, slotProps.data)" v-for="(event, index) in EventsStartFrom(slotProps.data.events, slotProps.data.date, slotProps.data)" :key="event.id" class="event" :style="[{'background-color': event.color, 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]"> -->
@@ -30,10 +30,14 @@
                             <label :style="{'font-size': eventlabelfontsize+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
-                    <label v-if="eventsFilterNonVisible(slotProps.data).length > 0" class="cell-events-more" @mouseover="ShowMorePanel($event, slotProps.data.events, slotProps.data.date)" @mouseleave="HideMorePanel()">More...</label>
+                    <label v-if="eventsFilterNonVisible(slotProps.data).length > 0" class="cell-events-more" @mouseover="ShowMorePanel($event, slotProps.data)">More...</label>
                     <div class="cell-dotevents-container">
                         <div v-for="(event, index) in eventsFilterNonVisible(slotProps.data)" :key="event.id" class="dotevent" :style="{'background-color': GetColor(event)}">
-
+                        </div>
+                    </div>
+                    <div :class="['tooltippanel', {tooltiphidden: !slotProps.data.showtooltip}]" id="tooltippanel" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :style="{'top': tooltip_top, 'left': tooltip_left, 'width': tooltip_w, 'height': tooltip_h}">
+                        <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in tooltip_events" :key="event.id" class="event" :style="[{'position':'relative','background-color': GetColor(event), 'width':'calc(100% - 10px)', 'height': '20px'}]">
+                            <label :style="{'font-size': eventlabelfontsize+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
                     <!--<div v-if="!moretooltiphidden && activetooltipid === slotProps.data.id" class="tooltippanel" :id="slotProps.data.id" :style="GetToolTipStyle(slotProps.data.events, slotProps.data.date, $event)">
@@ -44,19 +48,20 @@
                 <div ref="infopanelref" :class="['infopanel', {infopanelhidden: infopanelhidden}]">
                     <h4>{{ infopanel_title }}</h4>
                     <div class="infodate">{{ infopanel_date }}</div>
-                    <div class="dotevent" style="background-color: #f7a47d;">
+                    <div class="dotevent" :style="{'background-color': infopanel_eventcolor}">
                         <h6>Type: <span></span></h6>
                     </div>
                     <p>{{ infopanel_description }}</p>
                     <button class="deletebtn" @click="RemoveEventwithID(infopanel_eventid)"><span class="material-icons-outlined">delete</span></button>
+                    <button class="closebtn" @click="infopanelhidden = true;"><span class="material-icons-outlined">close</span></button>
                 </div>
             </template>
         </Scroller>
-        <div ref="tooltippanelref" :class="['tooltippanel', {tooltiphidden: moretooltiphidden}]" id="tooltippanel" :style="{'top': tooltip_top, 'left': tooltip_left, 'width': tooltip_w, 'height': tooltip_h}">
+        <!-- <div ref="tooltippanelref" :class="['tooltippanel', {tooltiphidden: moretooltiphidden}]" id="tooltippanel" :style="{'top': tooltip_top, 'left': tooltip_left, 'width': tooltip_w, 'height': tooltip_h}">
             <div v-for="(event, index) in tooltip_events" :key="event.id" class="event" :style="[{'position':'relative','background-color': GetColor(event), 'width':'calc(100% - 10px)', 'height': '20px'}]">
                 <label :style="{'font-size': eventlabelfontsize+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 </template>
@@ -236,8 +241,11 @@ export default defineComponent({
         let infopanel_description = ref("");
         let infopanel_date = ref("");
         let infopanel_eventid = ref("");
+        let infopanel_eventcolor = ref("#444444");
         let scrollanimate = ref(0);
         var today_id = '';
+        var morepanel_status = ref(0);
+        var morepanel_cell_id = ref("");
 
         function DotEventsStartFrom(cellevents: Array < any > , date: Date) {
             let final: Array < any > = [];
@@ -300,9 +308,13 @@ export default defineComponent({
             };
         } */
 
-        function ShowMorePanel(hoverevent: any, events: any, date: Date) {
+        function ShowMorePanel(hoverevent: any, day: any) {
+            let events = day.events;
+            let date = day.date;
             moretooltiphidden.value = false;
-            let tooltippanel = tooltippanelref.value; //document.getElementById("tooltippanel");
+            //let tooltippanel = tooltippanelref.value; //document.getElementById("tooltippanel");
+
+            day.showtooltip = true;
 
             //let style = "";
             let height = 0;
@@ -313,29 +325,61 @@ export default defineComponent({
             tooltip_events.value = [];
             tooltip_events.value = [...eventsonmore];
 
-            if (tooltippanel !== null) {
-                if (totaleventsonmore > 0) {
+            if (totaleventsonmore > 0) {
 
-                    let daycell: any = document.querySelector(".daycell");
-                    var _height = totaleventsonmore * (eventheight.value + props.eventmargin);
-                    tooltip_w.value = daycell.offsetWidth + "px";
-                    tooltip_h.value = _height + "px";
+                let daycell: any = document.querySelector(".daycell");
+                var _height = totaleventsonmore * (eventheight.value + props.eventmargin);
+                tooltip_w.value = daycell.offsetWidth + "px";
+                tooltip_h.value = _height + "px";
 
-                    // Calculate Left
-                    var celldocumentLeft = (hoverevent.target.parentElement).getBoundingClientRect().left;
-                    var celldocumentTop = (hoverevent.target.parentElement).getBoundingClientRect().top;
+                // Calculate Left
+                console.log("daycell.offsetHeight: ", daycell.offsetHeight);
+                /* var celldocumentLeft = (hoverevent.target.parentElement).getBoundingClientRect().left;
+                var celldocumentTop = (hoverevent.target.parentElement).getBoundingClientRect().top;
 
-                    tooltip_top.value = (celldocumentTop + daycell.offsetHeight + 5) + "px";
-                    tooltip_left.value = celldocumentLeft + "px";
-                } else {
-                    //style = "display: none;"
-                    //tooltippanel.style["display"] = "none;";
-                }
+                tooltip_top.value = (celldocumentTop + daycell.offsetHeight + 5) + "px";
+                tooltip_left.value = celldocumentLeft + "px"; */
+
+                tooltip_top.value = daycell.offsetHeight+"px";
+                tooltip_left.value = "0px";
+            } else {
+                //style = "display: none;"
+                //tooltippanel.style["display"] = "none;";
             }
         }
 
+        function AdjustMoreStatus(celldata: any, sign: number) {
+            if(morepanel_cell_id.value === "")
+            {
+                morepanel_cell_id.value = celldata.id;
+            } else {
+                if(sign === 1)
+                    {
+                        celldata._moresign++;
+                    } else {
+                        celldata._moresign--;
+                    }
+
+                if(celldata.moresign === 2)
+                {
+                    console.log("Sign: ", celldata._moresign);
+                }
+
+                if(celldata._moresign <= 0)
+                {
+                    celldata._moresign = 0;
+                    celldata.showtooltip = false;
+                } else if(celldata._moresign > 2)
+                {
+                    celldata._moresign = 2;
+                }
+            }
+
+            
+        }
+
         function HideMorePanel() {
-            moretooltiphidden.value = true;
+            console.log("morepanel_status: ", morepanel_status.value);
         }
 
         function UpdateCurrentMonth() {
@@ -414,12 +458,15 @@ export default defineComponent({
                         hasdiv: false,
                         //num: formatDate(date_a, 'dd EEE MM'),
                         num: formatDate(date_a, "dd"),
+                        month: formatDate(date_a, "MMM"),
                         events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, date_a),
                         today: today,
                         weekend: checkIfWeekendDay(date_a),
                         bgcolor: GetMonthColor(date_a.getMonth()),
                         visibleevents: [],
-                        dotevents: []
+                        dotevents: [],
+                        _moresign: 0,
+                        showttooltip: false
                     });
 
                     // Set Bottom Newest Date
@@ -449,12 +496,15 @@ export default defineComponent({
                         hasdiv: false,
                         //num: formatDate(date_b, 'dd EEE MM'),
                         num: formatDate(date_b, "dd"),
+                        month: formatDate(date_b, "MMM"),
                         events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, date_b),
                         today: today,
                         weekend: checkIfWeekendDay(date_b),
                         bgcolor: GetMonthColor(date_b.getMonth()),
                         visibleevents: [],
-                        dotevents: []
+                        dotevents: [],
+                        _moresign: 0,
+                        showttooltip: false
                     });
 
                     // Set Top Newest Date
@@ -588,11 +638,14 @@ export default defineComponent({
                     hasdiv: false,
                     events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, newdate),
                     num: formatDate(newdate, "dd"),
+                    month: formatDate(newdate, "MMM"),
                     today: today,
                     weekend: checkIfWeekendDay(newdate),
                     bgcolor: GetMonthColor(newdate.getMonth()),
                     visibleevents: [],
-                    dotevents: []
+                    dotevents: [],
+                    _moresign: 0,
+                    showttooltip: false
                 };
 
                 initialDays.push(_daytopush);
@@ -611,11 +664,14 @@ export default defineComponent({
                     hasdiv: false,
                     events: typeof eventscache[formatted_date_f] !== 'undefined' ? eventscache[formatted_date_f] : [], //GetSpecificDateEvents(formatted_date_f, newdate_f),
                     num: formatDate(newdate_f, "dd"),
+                    month: formatDate(newdate_f, "MMM"),
                     today: false,
                     weekend: checkIfWeekendDay(newdate_f),
                     bgcolor: GetMonthColor(newdate_f.getMonth()),
                     visibleevents: [],
-                    dotevents: []
+                    dotevents: [],
+                    _moresign: 0,
+                    showttooltip: false
                 });
             }
 
@@ -768,6 +824,7 @@ export default defineComponent({
             //console.log(eventscache[formatDate(celldata.date, "dd-MMM-yyyy")]);
             infopanel_title.value = event.title;
             infopanel_description.value = event.description;
+            infopanel_eventcolor.value = GetColor(event);
             infopanel_date.value = formatDate(celldata.date, "dd-MMM-yyyy");
             infopanel_eventid.value = event.id;
             /* console.log("celldata: ", celldata);
@@ -844,23 +901,22 @@ export default defineComponent({
                 console.log("Date Outside Loaded Dates");
                 //GenerateDays(date);
                 //this.$refs.scrollerref.SetAnimateNext(nextdata);
-                today_id = '';
+                var targetdate_id = formatted_date;
                 var initialDays = GetInitialDays(date);
                 //scrollerdata.value = [];
                 //scrollerdata.value.push(...initialDays);
-                scrollerref.value.SetAnimateNext(initialDays, ()=>{
+                scrollerref.value.SetAnimateNext(initialDays, () => {
+                    console.log("UpdateCurrentMonth");
                     UpdateCurrentMonth();
                 });
 
-                
-
-                // 4. Scroll today date
+                // 4. Scroll selected date
                 setTimeout(() => {
-                    if (today_id !== '') {
-                        var cellPosition = scrollerref.value.GetCellsPosition(today_id);
+                    if (targetdate_id !== '') {
+                        var cellPosition = scrollerref.value.GetCellsPosition(targetdate_id);
                         scrollerref.value.ScrollTo(cellPosition);
                     }
-                }, 1000);
+                }, 2100);
             }
         }
 
@@ -998,8 +1054,11 @@ export default defineComponent({
             infopanel_description,
             infopanel_date,
             infopanel_eventid,
+            infopanel_eventcolor,
             eventsFilterVisible,
             eventsFilterNonVisible,
+            morepanel_status,
+            morepanel_cell_id,
             scrollanimate,
             OnScroll,
             onUpdateDataNext,
@@ -1007,6 +1066,7 @@ export default defineComponent({
             onDataUpdated,
             CalculateEventHeight,
             //EventsStartFrom,
+            AdjustMoreStatus,
             RemoveEventwithID,
             DotEventsStartFrom,
             CalculateEventWidth,

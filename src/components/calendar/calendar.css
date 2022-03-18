@@ -73,7 +73,7 @@ ul.weekdays abbr[title] {
     background-color: #f1e0d8 !important;
 }
 
-.daycell span {
+/* .daycell span {
     position: absolute;
     top: 5pt;
     left: 5pt;
@@ -82,7 +82,7 @@ ul.weekdays abbr[title] {
     font-family: 'Quicksand', sans-serif;
     font-weight: 300;
 
-}
+} */
 
 .daycell {
     width: 100%;
@@ -101,6 +101,26 @@ ul.weekdays abbr[title] {
     display: flex;
     width: inherit;
     height: calc(2vw + 15pt);
+}
+
+.cell-label-container .cell-label-num {
+    margin-left: 5pt;
+    margin-top: 5pt;
+    font-size: 2vw;
+    color: #777;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    position: relative;
+}
+
+.cell-label-container .cell-label-month {
+    margin-left: 5pt;
+    font-size: 1vw;
+    color: #777;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    position: absolute;
+    bottom: 0pt;
 }
 
 .cell-events-container {
@@ -229,7 +249,7 @@ ul.weekdays abbr[title] {
 .infodate {
     position: absolute;
     top: 15px;
-    right: 15px;
+    right: 40px;
     font-size: 11pt;
     font-weight: 200;
 }
@@ -266,6 +286,16 @@ ul.weekdays abbr[title] {
     cursor: pointer;
 }
 
+.closebtn {
+    border: 0px solid;
+    background: none;
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    cursor: pointer;
+}
+
+
 .calendar-datepicker {
     position: absolute;
     right: 20px;
@@ -294,8 +324,14 @@ ul.weekdays abbr[title] {
 }
 
 @media all and (min-width: 1150px) {
-    .daycell span {
+    .cell-label-container .cell-label-num {
         font-size: 21pt !important;
+        height: 21pt;
+    }
+
+    .cell-label-container .cell-label-month {
+        font-size: 16pt !important;
+        line-height: 16pt;
     }
 
     .cell-label-container {
