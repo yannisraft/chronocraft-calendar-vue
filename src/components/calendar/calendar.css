@@ -1,7 +1,7 @@
 header {
     display: flex;
     align-items: center;
-    font-size: calc(6px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
+    /* font-size: calc(6px + (26 - 16) * ((100vw - 300px) / (1600 - 300))); */
     justify-content: center;
     margin-bottom: 2em;
     background: #837f7f;
@@ -69,6 +69,10 @@ ul.weekdays abbr[title] {
     position: relative;
 }
 
+.calendar-header {
+    font-size: 24pt;
+}
+
 .litoday {
     background-color: #f1e0d8 !important;
 }
@@ -106,7 +110,7 @@ ul.weekdays abbr[title] {
 .cell-label-container .cell-label-num {
     margin-left: 5pt;
     margin-top: 5pt;
-    font-size: 2vw;
+    font-size: 3vw;
     color: #777;
     font-family: 'Quicksand', sans-serif;
     font-weight: 300;
@@ -180,7 +184,12 @@ ul.weekdays abbr[title] {
 .event label {
     font-family: 'Quicksand', sans-serif;
     padding-left: 10px;
+    padding-right: 10px;
     cursor: pointer;
+    font-size: 10pt;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 
 .cell-events-more {
@@ -307,10 +316,8 @@ ul.weekdays abbr[title] {
     height: 64px;
 }
 
+
 @media all and (max-width: 800px) {
-    /* ul, ol {
-    grid-gap: .25em;
-} */
 
     ul.weekdays li {
         font-size: 0;
@@ -321,14 +328,80 @@ ul.weekdays abbr[title] {
         font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
         text-align: center;
     }
+
+    .calendar-header {
+        font-size: 20pt !important;
+    }
 }
 
-@media all and (min-width: 1150px) {
+@media all and (max-width: 600px) {
+    .cell-label-container .cell-label-num {
+        font-size: 13pt !important;
+        height: 13pt;
+    }
+
+    .cell-label-container .cell-label-month {
+        font-size: 8pt !important;
+        line-height: 8pt;
+        margin-left: 2pt;
+    }
+
+    .infopanel {
+        width: 80%;
+    }
+
+    .calendar-header {
+        font-size: 16pt !important;
+    }
+}
+
+
+@media all and (max-width: 450px) {
+    .cell-label-container .cell-label-num {
+        font-size: 10pt !important;
+        height: 10pt;
+    }
+
+    .cell-label-container .cell-label-month {
+        font-size: 7pt !important;
+        line-height: 7pt;
+        margin-left: 1pt;
+    }
+    
+    .calendar-header {
+        font-size: 16pt !important;
+    }
+}
+
+
+@media all and (min-width: 610px) {
+    .cell-label-container .cell-label-month {
+        font-size: 12pt !important;
+        line-height: 12pt;
+    }
+
+    .infopanel {
+        width: 70%;
+    }
+}
+
+@media all and (min-width: 900px) {
     .cell-label-container .cell-label-num {
         font-size: 21pt !important;
         height: 21pt;
     }
 
+    .cell-label-container .cell-label-month {
+        font-size: 14pt !important;
+        line-height: 14pt;
+    }
+
+    .infopanel {
+        width: 60%;
+    }
+}
+
+@media all and (min-width: 1150px) {
     .cell-label-container .cell-label-month {
         font-size: 16pt !important;
         line-height: 16pt;
@@ -336,5 +409,9 @@ ul.weekdays abbr[title] {
 
     .cell-label-container {
         height: calc(21pt + 15pt) !important;
+    }
+
+    .infopanel {
+        width: 50%;
     }
 }

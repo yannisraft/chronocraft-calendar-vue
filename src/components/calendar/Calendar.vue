@@ -2,7 +2,7 @@
 <div class="calendar-container">
     <header>
         <slot :headerlabel="monthLabel" name="header">
-            <h1>{{ monthLabel }}</h1>
+            <h1 class="calendar-header">{{ monthLabel }}</h1>
             <DatePicker :rangepicker="false" :showselecteddate="true" class="calendar-datepicker" @on-date-selected="OnDateSelected">
                 <template v-slot:inputfield="slotProps">
                     <span class="material-icons-outlined" style="cursor: pointer;">date_range</span>
@@ -27,7 +27,7 @@
                     <div class="cell-events-container">
                         <!-- <div @click="OpenInfoPanel($event, slotProps.data)" v-for="(event, index) in EventsStartFrom(slotProps.data.events, slotProps.data.date, slotProps.data)" :key="event.id" class="event" :style="[{'background-color': event.color, 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]"> -->
                         <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in eventsFilterVisible(slotProps.data)" :key="event.id" class="event" :style="[{'background-color': GetColor(event), 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]">
-                            <label :style="{'font-size': eventlabelfontsize+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
+                            <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
                     <label v-if="eventsFilterNonVisible(slotProps.data).length > 0" class="cell-events-more" @mouseover="ShowMorePanel($event, slotProps.data)">More...</label>
@@ -37,7 +37,7 @@
                     </div>
                     <div :class="['tooltippanel', {tooltiphidden: !slotProps.data.showtooltip}]" id="tooltippanel" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :style="{'top': tooltip_top, 'left': tooltip_left, 'width': tooltip_w, 'height': tooltip_h}">
                         <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in tooltip_events" :key="event.id" class="event" :style="[{'position':'relative','background-color': GetColor(event), 'width':'calc(100% - 10px)', 'height': '20px'}]">
-                            <label :style="{'font-size': eventlabelfontsize+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
+                            <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
                     <!--<div v-if="!moretooltiphidden && activetooltipid === slotProps.data.id" class="tooltippanel" :id="slotProps.data.id" :style="GetToolTipStyle(slotProps.data.events, slotProps.data.date, $event)">
@@ -845,6 +845,20 @@ export default defineComponent({
             }
         }
 
+        function GetEventsFontsize() {
+            let newsize = props.eventlabelfontsize;
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+
+            if(vw < 700)
+            {
+                newsize = 0.8 * props.eventlabelfontsize;
+            } else if(vw < 550)
+            {
+                newsize = 0.6 * props.eventlabelfontsize;
+            }
+            return newsize;
+        }
+
         const OnScroll = () => {
             infopanelhidden.value = true;
             UpdateCurrentMonth();
@@ -1019,7 +1033,6 @@ export default defineComponent({
             UpdateEvents();
             GenerateDays();
             UpdateCurrentMonth();
-
         });
 
         onUpdated(() => {
@@ -1066,6 +1079,7 @@ export default defineComponent({
             onDataUpdated,
             CalculateEventHeight,
             //EventsStartFrom,
+            GetEventsFontsize,
             AdjustMoreStatus,
             RemoveEventwithID,
             DotEventsStartFrom,
