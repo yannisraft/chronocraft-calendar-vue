@@ -1,12 +1,14 @@
 {
   "name": "chronocraft-calendar-vue",
   "buildname": "chronocraftcalendarvue",
-  "version": "0.1.13",
+  "version": "0.1.15",
   "description": "The Chronocraft Calendar is a vue3 javascript flexible calendar library with vertical infinite scroling created for Vue3. It provides smooth infinite scrolling with drag and mouse wheel navigation",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/chronocraft-vue3-lib.min.js",
   "types": "types/index.d.ts",
+  "license": "MIT",
+  "author": "Raftopoulos Yannis - Chronocraft Tools",
   "files": [
     "dist/*",
     "src",
@@ -49,7 +51,7 @@
     "vue": "^3.2.30"
   },
   "dependencies": {
-    "chronocraft-datepicker-vue": "^0.0.2",
+    "chronocraft-datepicker-vue": "^0.1.1",
     "core-js": "^3.6.5"
   },
   "devDependencies": {

@@ -10,6 +10,8 @@ It includes an events functionality and a smooth infinite scrolling feel with dr
 - Typescript support
 - Smooth scrolling
 
+![alt text](https://gamepencils.com/calendar.gif)
+
 ## Usage of Calendar
 
 Using the Library as a Plugin
@@ -69,3 +71,4 @@ Calendar
 |---|---|---|
 |  header  | yes  | Overrides the calendar's header
 |  headercell  | yes  | Overrides the calendar's header cells which now show the day names
+|  cell  | yes  | Overrides the calendar's cells which show the days

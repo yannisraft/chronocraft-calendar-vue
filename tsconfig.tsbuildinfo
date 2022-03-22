@@ -302,8 +302,8 @@
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "43eab16c9de079e48fde642134a9f0e0f39f173a6375c4a346a3759dba377cb9",
-        "signature": "9d527a687a633a7d25141b310cda3566afdc9569c8ea7abb5dbc87586d4a1fc6",
+        "version": "c9c883e929a5928d8de4e04bfa8fe5ab9f2c29b0cfff7b4c7b97f50a50b580a8",
+        "signature": "5e4850469a445970f4dc60e55fcd8afa88217149bdf3c547e71ae59ec0eedb43",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/index.ts": {
