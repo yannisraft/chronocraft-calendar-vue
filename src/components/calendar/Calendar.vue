@@ -94,6 +94,7 @@ import {
     getDiffInDays,
     deepCopy,
     daysMatch,
+    dateWithTimeZone
 } from "./../../utilities/index";
 
 export default defineComponent({
@@ -156,6 +157,10 @@ export default defineComponent({
         weekendcolored: {
             type: Boolean,
             default: true,
+        },
+        timezone: {
+            type: String,
+            default: "local"
         },
         monthcolorvariations: {
             type: Array,
@@ -616,14 +621,22 @@ export default defineComponent({
 
         function GetInitialDays(basedate: any) {
             var initialDays: any = [];
-            let d = new Date();
+            //let d = new Date();
+            let d = dateWithTimeZone('el-GR', 'America/Los_Angeles', new Date() );
             if (basedate) d = basedate;
             let day = d.getDay();
+
+            console.log(d);
+            console.log(new Date());
 
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
                 var newdate = new Date(d.getTime());
+                
+                //var newdate = dateWithTimeZone('el-GR', 'America/Los_Angeles', new Date(d.getTime()) );
                 newdate = addDays(newdate, -b);
+
+                console.log("newdate: ", newdate);
 
                 var today = false;
                 var formatted_date = formatDate(newdate, "dd-MMM-yyyy");

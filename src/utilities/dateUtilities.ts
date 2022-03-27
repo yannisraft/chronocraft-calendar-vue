@@ -11,7 +11,7 @@ export const getDiff = (d1: Date, d2: Date): number => {
 
 export const getDiffInDays = (d1: Date, d2: Date): number => {
     var result = d1.getTime() - d2.getTime();
-    return Math.ceil(result / (1000 * 60 * 60 * 24)); ;
+    return Math.ceil(result / (1000 * 60 * 60 * 24));;
 };
 
 export const daysMatch = (d1: Date, d2: Date): boolean => {
@@ -23,6 +23,54 @@ export const daysMatch = (d1: Date, d2: Date): boolean => {
 export const twoDigitPad = (num: number): string => {
     return num < 10 ? ("0" + String(num)) : String(num);
 }
+
+// nOT wORKING? 
+// https://stackoverflow.com/questions/948532/how-to-convert-a-date-to-utc
+//
+export const dateWithTimeZone = (locale: string, timeZone: string, indate: Date): Date => {
+    let year = indate.getFullYear();
+    let month = indate.getMonth();
+    let day = indate.getDate();
+    let hour = indate.getHours();
+    let minute = indate.getMinutes();
+    let second = indate.getSeconds();
+
+    // e.x. dateWithTimeZone("America/Los_Angeles",2019,8,8,0,0,0)
+    let date = new Date(Date.UTC(year, month, day, hour, minute, second));
+
+    let utcDate = new Date(date.toLocaleString(locale, { timeZone: "UTC" }));
+    let tzDate = new Date(date.toLocaleString(locale, { timeZone: timeZone }));
+    let offset = utcDate.getTime() - tzDate.getTime();
+
+    date.setTime(date.getTime() + offset);
+    return date;
+}
+
+export function convertLocalDateToUTCIgnoringTimezone(date: Date) {
+    const timestamp = Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+      date.getMilliseconds(),
+    );
+  
+    return new Date(timestamp);
+  }
+  
+  export function convertUTCToLocalDateIgnoringTimezone(utcDate: Date) {
+    return new Date(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+      utcDate.getUTCHours(),
+      utcDate.getUTCMinutes(),
+      utcDate.getUTCSeconds(),
+      utcDate.getUTCMilliseconds(),
+    );
+  }
 
 export const formatDate = (date: any, patternStr: string): string => {
     var monthNames = [
