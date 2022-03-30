@@ -1,6 +1,6 @@
 <template>
 <h1>ChronoCraft Calendar Test Playground</h1>
-<Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
+<Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" timezone="America/New_York" locale="el-GR" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
     <!-- <template v-slot:header="slotProps">
         <span>{{ slotProps.headerlabel }}</span>
     </template>
@@ -17,6 +17,8 @@ import {
     defineComponent
 } from 'vue';
 import Calendar from './components/Calendar/Calendar.vue';
+
+const { DateTime } = require("luxon");
 
 export default defineComponent({
     name: 'App',
@@ -48,8 +50,8 @@ export default defineComponent({
                     type: 'meeting',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-21T10:20:30Z'),
-                    enddate: new Date('2022-02-22T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-21T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-22T10:20:30Z'),
                 },
                 {
                     id: 2,
@@ -57,8 +59,8 @@ export default defineComponent({
                     type: 'work',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-22T10:20:30Z'),
-                    enddate: new Date('2022-02-23T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-22T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-23T10:20:30Z'),
                 },
                 {
                     id: 3,
@@ -66,8 +68,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-25T10:20:30Z'),
-                    enddate: new Date('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
                 },
                 {
                     id: 4,
@@ -75,8 +77,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-25T10:20:30Z'),
-                    enddate: new Date('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
                 },
                 {
                     id: 5,
@@ -84,8 +86,8 @@ export default defineComponent({
                     type: 'work',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-25T10:20:30Z'),
-                    enddate: new Date('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
                 },
                 {
                     id: 6,
@@ -93,8 +95,8 @@ export default defineComponent({
                     type: 'meeting',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-23T10:20:30Z'),
-                    enddate: new Date('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-23T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
                 },
                 {
                     id: 7,
@@ -102,8 +104,8 @@ export default defineComponent({
                     type: 'meeting',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-25T10:20:30Z'),
-                    enddate: new Date('2022-02-28T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-28T10:20:30Z'),
                 },
                 {
                     id: 8,
@@ -111,24 +113,24 @@ export default defineComponent({
                     type: 'work',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-24T10:20:30Z'),
-                    enddate: new Date('2022-03-01T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-24T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-01T10:20:30Z'),
                 },
                 {
                     id: 9,
                     title: "Event #9",
                     type: 'work',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-18T10:20:30Z'),
-                    enddate: new Date('2022-02-21T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-18T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-21T10:20:30Z'),
                 },
                 {
                     id: 10,
                     title: "Event #10",
                     type: 'work',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-20T10:20:30Z'),
-                    enddate: new Date('2022-02-22T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-20T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-02-22T10:20:30Z'),
                 },
                 {
                     id: 11,
@@ -136,8 +138,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: new Date('2022-02-24T10:20:30Z'),
-                    enddate: new Date('2022-03-01T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-02-24T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-01T10:20:30Z'),
                 }
             ]
         }
@@ -153,8 +155,8 @@ export default defineComponent({
                 type: 'break',
                 category: 'test',
                 description: "on three ",
-                startdate: new Date('2022-03-02T10:20:30Z'),
-                enddate: new Date('2022-03-07T10:20:30Z'),
+                startdate: DateTime.fromISO('2022-03-02T10:20:30Z'),
+                enddate: DateTime.fromISO('2022-03-07T10:20:30Z'),
             });
         },
         RemoveEvent(eventid: number) {

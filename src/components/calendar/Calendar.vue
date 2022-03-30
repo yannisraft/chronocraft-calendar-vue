@@ -11,14 +11,14 @@
         </slot>
     </header>
     <ul class="weekdays">
-        <li v-for="daylabel in dayslabels" :key="daylabel.title">
+        <li v-for="daylabel in dayslocale" :key="daylabel.title">
             <slot :daylabel="daylabel" name="headercell">
                 <abbr :title="daylabel.short">{{ daylabel.title }}</abbr>
             </slot>
         </li>
     </ul>
     <div class="container">
-        <Scroller ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :data="scrollerdata" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious" @on-data-updated="onDataUpdated">
+        <Scroller  v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
             <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgcolor }">
                 <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
                     <div class="cell-label-container">
@@ -87,15 +87,21 @@ import {
 
 import {
     enumerateDaysBetweenDates,
+    enumerateDaysBetweenDatesLuxon,
     formatDate,
     addDays,
     checkIfWeekendDay,
+    checkIfWeekendDayLuxon,
     getDiff,
     getDiffInDays,
+    getDiffLuxon,
+    getDiffInDaysLuxon,
     deepCopy,
     daysMatch,
-    dateWithTimeZone
+    daysMatchLuxon
 } from "./../../utilities/index";
+
+const { DateTime, Info } = require("luxon");
 
 export default defineComponent({
     name: 'App',
@@ -157,16 +163,24 @@ export default defineComponent({
         weekendcolored: {
             type: Boolean,
             default: true,
-        },
+        },        
         timezone: {
             type: String,
-            default: "local"
+            default: "system" // UTC, system, "America/New York", fixed
+        },
+        locale: {
+            type: String,
+            default: "en-US"
         },
         monthcolorvariations: {
             type: Array,
             default: () => {
                 return ["#f9f7f7", "#edebeb", "#f9f7f7", "#ffffff"]
             }
+        },
+        autodaylabels: {
+            type: Boolean,
+            default: true,
         },
         dayslabels: {
             type: Array,
@@ -251,8 +265,9 @@ export default defineComponent({
         var today_id = '';
         var morepanel_status = ref(0);
         var morepanel_cell_id = ref("");
+        let dayslocale: any = ref([]);
 
-        function DotEventsStartFrom(cellevents: Array < any > , date: Date) {
+        function DotEventsStartFrom(cellevents: Array < any > , date: any) {
             let final: Array < any > = [];
             if (cellevents.length > fiteventsnumber.value) {
                 if (cellevents.length > 0) {
@@ -367,7 +382,7 @@ export default defineComponent({
 
                 if(celldata.moresign === 2)
                 {
-                    console.log("Sign: ", celldata._moresign);
+                    //console.log("Sign: ", celldata._moresign);
                 }
 
                 if(celldata._moresign <= 0)
@@ -392,8 +407,8 @@ export default defineComponent({
             if (scrollerdata.value[middledateIndex]) {
                 var middledate: any = scrollerdata.value[middledateIndex].date;
 
-                var monthnum = middledate.getMonth();
-                var monthStr = formatDate(middledate, "MMMM yyyy");
+                var monthnum = middledate.month;
+                var monthStr = middledate.toFormat("MMMM yyyy");
 
                 monthLabel.value = monthStr;
             }
@@ -417,9 +432,9 @@ export default defineComponent({
             }
         }
 
-        function CalculateEventWidth(date: Date, dateid: any, event: any) {
+        function CalculateEventWidth(date: any, dateid: any, event: any) {
             let daycell: any = document.querySelector(".daycell");
-            let dayIndex = date.getDay();
+            let dayIndex = date.weekday;
             var widthmultiplier = event.duration;
 
             if (widthmultiplier > (6 - (dayIndex) + 1)) widthmultiplier = (6 - (dayIndex) + 1);
@@ -427,25 +442,26 @@ export default defineComponent({
             if (marginmultiplier === 1) marginmultiplier = 0;
 
             let finalWidth = (daycell.offsetWidth * widthmultiplier) - 2 * props.eventmargin + marginmultiplier * props.eventmargin;
-            if (date.getDay() === 0) {
-                widthmultiplier = getDiffInDays(event.enddate, date);
+            if (date.day === 0) {
+                widthmultiplier = getDiffInDaysLuxon(event.enddate, date);
                 finalWidth = daycell.offsetWidth * widthmultiplier - 2 * props.eventmargin;
             }
             return finalWidth;
         }
 
-        function ISToday(_date: Date) {
-            let today = new Date();
+        function ISToday(_date: any) {
+            let today = CreateDate();
 
             return (
-                _date.getDate() == today.getDate() &&
-                _date.getMonth() == today.getMonth() &&
-                _date.getFullYear() == today.getFullYear()
+                _date.day == today.day &&
+                _date.month == today.month &&
+                _date.year == today.year
             );
         }
 
         function GenerateForwardMonth(start: any, end: any, atInitialization: Boolean) {
-            var fdates = enumerateDaysBetweenDates(start, end);
+            var fdates = enumerateDaysBetweenDatesLuxon(start, end);
+
             var daystoadd = [];
             for (var md = 0; md < fdates.length; md++) {
                 if (md > 0) {
@@ -456,18 +472,18 @@ export default defineComponent({
                         today = true;
                     }
 
-                    var formatted_date = formatDate(date_a, "dd-MMM-yyyy");
+                    var formatted_date = date_a.toFormat('dd-MM-yyyy');
+
                     daystoadd.push({
                         id: formatted_date,
                         date: date_a,
                         hasdiv: false,
-                        //num: formatDate(date_a, 'dd EEE MM'),
-                        num: formatDate(date_a, "dd"),
-                        month: formatDate(date_a, "MMM"),
+                        num: date_a.toFormat('dd'), //formatDate(date_a, "dd"),
+                        month: date_a.toFormat('MMM'),//formatDate(date_a, "MMM"),
                         events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, date_a),
                         today: today,
-                        weekend: checkIfWeekendDay(date_a),
-                        bgcolor: GetMonthColor(date_a.getMonth()),
+                        weekend: checkIfWeekendDayLuxon(date_a),
+                        bgcolor: GetMonthColor(date_a.month),
                         visibleevents: [],
                         dotevents: [],
                         _moresign: 0,
@@ -483,7 +499,7 @@ export default defineComponent({
         }
 
         function GenerateBackwardMonth(start: any, end: any, atInitialization: Boolean) {
-            var bdates = enumerateDaysBetweenDates(start, end);
+            var bdates = enumerateDaysBetweenDatesLuxon(start, end);
             var daystoadd = [];
             for (var bd = 0; bd < bdates.length - 1; bd++) {
                 if (bd < bdates.length - 1) {
@@ -494,18 +510,18 @@ export default defineComponent({
                         today = true;
                     }
 
-                    var formatted_date = formatDate(date_b, "dd-MMM-yyyy");
+                    var formatted_date = date_b.toFormat('dd-MM-yyyy');
                     daystoadd.push({
                         id: formatted_date,
                         date: date_b,
                         hasdiv: false,
                         //num: formatDate(date_b, 'dd EEE MM'),
-                        num: formatDate(date_b, "dd"),
-                        month: formatDate(date_b, "MMM"),
+                        num: date_b.toFormat('dd'),
+                        month: date_b.toFormat('MMM'),
                         events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, date_b),
                         today: today,
-                        weekend: checkIfWeekendDay(date_b),
-                        bgcolor: GetMonthColor(date_b.getMonth()),
+                        weekend: checkIfWeekendDayLuxon(date_b),
+                        bgcolor: GetMonthColor(date_b.month),
                         visibleevents: [],
                         dotevents: [],
                         _moresign: 0,
@@ -534,6 +550,23 @@ export default defineComponent({
             return color;
         }
 
+        function UpdateLocaleStrings() {
+            if(props.autodaylabels)
+            {
+                let luxondays_long = Info.weekdays('long', {locale: props.locale});
+                let luxondaysshort = Info.weekdays('short', {locale: props.locale});
+
+                var final = [];
+                for(var f=0;f< luxondays_long.length; f++)
+                {
+                    final.push({title: luxondays_long[f],short: luxondaysshort[f]});
+                }
+                dayslocale.value = final;
+            } else {
+                dayslocale.value = props.dayslabels;
+            }
+        }
+
         function UpdateEvents() {
             eventscache = {};
 
@@ -548,9 +581,10 @@ export default defineComponent({
                     let event: any = sortedevents_bydate[t];
 
                     // enumarate all dates from start to end
-                    var fdates = enumerateDaysBetweenDates(event.startdate, event.enddate);
+                    var fdates = enumerateDaysBetweenDatesLuxon(event.startdate, event.enddate);
                     for (var md = 0; md < fdates.length; md++) {
-                        var dateStr = formatDate(fdates[md], "dd-MMM-yyyy");
+                        //var dateStr = formatDate(fdates[md], "dd-MMM-yyyy");
+                        var dateStr = (fdates[md]).toFormat("dd-MM-yyyy");
                         if (eventscache.hasOwnProperty(dateStr) && typeof eventscache[dateStr] !== 'undefined') {
                             if (event.index === null || typeof event.index === 'undefined') {
                                 // Get First Available Index
@@ -573,8 +607,9 @@ export default defineComponent({
                                 }
 
                                 event.index = available_index;
-                                event.duration = getDiffInDays(event.enddate, event.startdate);
-                                if (daysMatch(event.startdate, fdates[md])) {
+                                event.duration = getDiffInDaysLuxon(event.enddate, event.startdate);
+                                
+                                if (daysMatchLuxon(event.startdate, fdates[md])) {
                                     //event.hasdiv = true;      
                                 } else {
                                     event.hasdiv = false;
@@ -584,9 +619,9 @@ export default defineComponent({
                             eventscache[dateStr].push(event);
                         } else {
                             if (event.index === null || typeof event.index === 'undefined') {
-                                event.duration = getDiffInDays(event.enddate, event.startdate);
+                                event.duration = getDiffInDaysLuxon(event.enddate, event.startdate);
 
-                                if (daysMatch(event.startdate, fdates[md])) {
+                                if (daysMatchLuxon(event.startdate, fdates[md])) {
                                     event.hasdiv = true;
                                     event.index = 0;
                                 }
@@ -599,7 +634,7 @@ export default defineComponent({
             }
         }
 
-        function GetSpecificDateEvents(formatted_date: string, date: Date) {
+        function GetSpecificDateEvents(formatted_date: string, date: any) {
             let newdate_events: any = [];
             if (eventscache.hasOwnProperty(formatted_date) && typeof eventscache[formatted_date] !== 'undefined') {
                 if (eventscache[formatted_date].length > 0) {
@@ -621,25 +656,23 @@ export default defineComponent({
 
         function GetInitialDays(basedate: any) {
             var initialDays: any = [];
-            //let d = new Date();
-            let d = dateWithTimeZone('el-GR', 'America/Los_Angeles', new Date() );
+            let d = CreateDate();
+            
             if (basedate) d = basedate;
-            let day = d.getDay();
-
-            console.log(d);
-            console.log(new Date());
+            //let day = d.getDay();
+            let day = d.day;
 
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
-                var newdate = new Date(d.getTime());
+                //var newdate = new Date(d.getTime());
+                var newdate = d;
                 
-                //var newdate = dateWithTimeZone('el-GR', 'America/Los_Angeles', new Date(d.getTime()) );
-                newdate = addDays(newdate, -b);
-
-                console.log("newdate: ", newdate);
+                //newdate = addDays(newdate, -b);
+                newdate = newdate.plus({ days: -b });
 
                 var today = false;
-                var formatted_date = formatDate(newdate, "dd-MMM-yyyy");
+                //var formatted_date = formatDate(newdate, "dd-MMM-yyyy");
+                var formatted_date = newdate.toFormat('dd-MM-yyyy');
                 if (ISToday(newdate)) {
                     today = true;
                     today_id = formatted_date;
@@ -650,16 +683,17 @@ export default defineComponent({
                     date: newdate,
                     hasdiv: false,
                     events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, newdate),
-                    num: formatDate(newdate, "dd"),
-                    month: formatDate(newdate, "MMM"),
+                    num: newdate.toFormat('dd'), //formatDate(newdate, "dd"),
+                    month: newdate.toFormat('MMM'), //formatDate(newdate, "MMM"),
                     today: today,
-                    weekend: checkIfWeekendDay(newdate),
-                    bgcolor: GetMonthColor(newdate.getMonth()),
+                    weekend: checkIfWeekendDayLuxon(newdate),
+                    bgcolor: GetMonthColor(newdate.month), //GetMonthColor(newdate.getMonth()),
                     visibleevents: [],
                     dotevents: [],
                     _moresign: 0,
                     showttooltip: false
                 };
+                
 
                 initialDays.push(_daytopush);
             }
@@ -667,20 +701,24 @@ export default defineComponent({
             // 2. Add forward days
             var forwarddaystoload = 6 - day;
             for (var f = 1; f <= forwarddaystoload; f++) {
-                var newdate_f = new Date(d.getTime());
-                newdate_f = addDays(newdate_f, f);
-                var formatted_date_f = formatDate(newdate_f, "dd-MMM-yyyy");
+                //var newdate_f = new Date(d.getTime());
+                var newdate_f = CreateDate();
+
+                //newdate_f = addDays(newdate_f, f);
+                newdate_f = newdate_f.plus({ days: f });
+
+                var formatted_date_f = newdate_f.toFormat('dd-MM-yyyy');
 
                 initialDays.push({
                     id: formatted_date_f,
                     date: newdate_f,
                     hasdiv: false,
                     events: typeof eventscache[formatted_date_f] !== 'undefined' ? eventscache[formatted_date_f] : [], //GetSpecificDateEvents(formatted_date_f, newdate_f),
-                    num: formatDate(newdate_f, "dd"),
-                    month: formatDate(newdate_f, "MMM"),
+                    num: newdate_f.toFormat('dd'), //formatDate(newdate_f, "dd"),
+                    month: newdate_f.toFormat('MMM'), //formatDate(newdate_f, "MMM"),
                     today: false,
-                    weekend: checkIfWeekendDay(newdate_f),
-                    bgcolor: GetMonthColor(newdate_f.getMonth()),
+                    weekend: checkIfWeekendDayLuxon(newdate_f),
+                    bgcolor: GetMonthColor(newdate_f.month),
                     visibleevents: [],
                     dotevents: [],
                     _moresign: 0,
@@ -689,16 +727,18 @@ export default defineComponent({
             }
 
             // 3. Now add forward 1 month
-            var lastdate: any = initialDays[initialDays.length - 1].date;
-            var lastmonthdate: any = addDays(lastdate, Math.round(initialdaysToLoad));
+            var lastdate: any = initialDays[initialDays.length - 1].date;            
+            var lastmonthdate = lastdate;
+            lastmonthdate = lastmonthdate.plus({ days: Math.round(initialdaysToLoad) });
+
             var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);
             initialDays = [...initialDays, ...daystoadd];
 
             // 3. Now add backward 1 month
             let firstdate: any = initialDays[0].date;
-            let firstdateofmonth: any = addDays(firstdate, Math.round(-initialdaysToLoad));
+            let firstdateofmonth = firstdate;
+            firstdateofmonth = firstdateofmonth.plus({ days: Math.round(-initialdaysToLoad) });
             var daystoaddbackward = GenerateBackwardMonth(firstdateofmonth, firstdate, true);
-            //scrollerdata.value = [...daystoaddbackward, ...scrollerdata.value];
             initialDays = [...daystoaddbackward, ...initialDays];
 
             // console.log(initialDays.length);
@@ -708,77 +748,9 @@ export default defineComponent({
 
         function GenerateDays() {
             // Initialize with Today
-            let d = new Date();
+            let d = CreateDate();
+
             var initialDays = GetInitialDays(d);
-
-            //let day = d.getDay();
-
-            //var initialDays = [];
-            //var today_id = '';
-
-            /* // 1. Add backward days
-            for (var b = day; b >= 0; b--) {
-                var newdate = new Date(d.getTime());
-                newdate = addDays(newdate, -b);
-
-                var today = false;
-                var formatted_date = formatDate(newdate, "dd-MMM-yyyy");
-                if (ISToday(newdate)) {
-                    today = true;
-                    today_id = formatted_date;
-                }
-
-                let _daytopush: any = {
-                    id: formatted_date,
-                    date: newdate,
-                    hasdiv: false,
-                    events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, newdate),
-                    num: formatDate(newdate, "dd"),
-                    today: today,
-                    weekend: checkIfWeekendDay(newdate),
-                    bgcolor: GetMonthColor(newdate.getMonth()),
-                    visibleevents: [],
-                    dotevents: []
-                };
-
-                initialDays.push(_daytopush);
-            }
-
-            // 2. Add forward days
-            var forwarddaystoload = 6 - day;
-            for (var f = 1; f <= forwarddaystoload; f++) {
-                var newdate_f = new Date(d.getTime());
-                newdate_f = addDays(newdate_f, f);
-                var formatted_date_f = formatDate(newdate_f, "dd-MMM-yyyy");
-
-                initialDays.push({
-                    id: formatted_date_f,
-                    date: newdate_f,
-                    hasdiv: false,
-                    events: typeof eventscache[formatted_date_f] !== 'undefined' ? eventscache[formatted_date_f] : [], //GetSpecificDateEvents(formatted_date_f, newdate_f),
-                    num: formatDate(newdate_f, "dd"),
-                    today: false,
-                    weekend: checkIfWeekendDay(newdate_f),
-                    bgcolor: GetMonthColor(newdate_f.getMonth()),
-                    visibleevents: [],
-                    dotevents: []
-                });
-            }
-
-            // 3. Now add forward 1 month
-            var lastdate: any = initialDays[initialDays.length - 1].date;
-            var lastmonthdate: any = addDays(lastdate, Math.round(initialdaysToLoad));
-            var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);
-            initialDays = [...initialDays, ...daystoadd];
-
-            // 3. Now add backward 1 month
-            let firstdate: any = initialDays[0].date;
-            let firstdateofmonth: any = addDays(firstdate, Math.round(-initialdaysToLoad));
-            var daystoaddbackward = GenerateBackwardMonth(firstdateofmonth, firstdate, true);
-            //scrollerdata.value = [...daystoaddbackward, ...scrollerdata.value];
-            initialDays = [...daystoaddbackward, ...initialDays];
-
-            // console.log(initialDays.length); */
 
             scrollerdata.value.push(...initialDays);
 
@@ -791,7 +763,34 @@ export default defineComponent({
             }, 1000);
         } // end f(): Generate Calendar Days
 
-        function GetToolTipStyle(events: any, date: Date, event: any) {
+        function CreateDate(existingDate?: Date) {
+
+            let dt = null;
+            if(existingDate) {
+                dt = DateTime.fromObject({day: existingDate.getDate(), month: existingDate.getMonth(), year: existingDate.getFullYear() });
+            } else {
+                if(props.timezone === 'UTC') {
+                    dt = DateTime.utc();
+                } else {
+                    dt = DateTime.now();
+                }
+            }
+
+            // timezone varialbe can be: UTC, system, "America/New York", fixed            
+            if(props.timezone === 'UTC') {
+                return dt.setLocale(props.locale);
+            } else if(props.timezone === 'system') {
+                return dt.setLocale(props.locale);
+            } else if(props.timezone === 'fixed') {
+                return dt.setLocale(props.locale);
+            } else {
+                let returned_dt = dt.setLocale(props.locale).setZone(props.timezone);
+                if(returned_dt.invalid) throw "Error in Luxon: "+returned_dt.invalid.reason;
+                return returned_dt;
+            }
+        }
+
+        function GetToolTipStyle(events: any, date: any, event: any) {
             let style = "";
             let height = 0;
             let _padding = 10;
@@ -799,6 +798,7 @@ export default defineComponent({
             let totaleventsonmore = DotEventsStartFrom(events, date).length;
             //let totaleventsonmore = eventsFilterNonVisible({events: events, date: date}).length;
 
+            // OLD
             /* if (events.length > 0 && fiteventsnumber.value > 0) {
                 for (var f = 0; f < events.length; f++) {
                     if (events[f].index !== null && typeof events[f].index !== 'undefined') {
@@ -838,7 +838,7 @@ export default defineComponent({
             infopanel_title.value = event.title;
             infopanel_description.value = event.description;
             infopanel_eventcolor.value = GetColor(event);
-            infopanel_date.value = formatDate(celldata.date, "dd-MMM-yyyy");
+            infopanel_date.value = (celldata.date).toFormat("dd-MM-yyyy");
             infopanel_eventid.value = event.id;
             /* console.log("celldata: ", celldata);
             console.log("event: ", event);
@@ -879,56 +879,65 @@ export default defineComponent({
 
         const onUpdateDataNext = (done: (data: any) => void) => {
             startDate = bottomDate;
-            endDate = addDays(bottomDate, newdaysToLoad);
+            //endDate = addDays(bottomDate, newdaysToLoad);
+            endDate = bottomDate.plus({days: newdaysToLoad});
             bottomDate = endDate;
 
             var newdata = GenerateForwardMonth(startDate, endDate, false);
 
-            topDate = addDays(topDate, newdaysToLoad);
+            //topDate = addDays(topDate, newdaysToLoad);
+            topDate = topDate.plus({days: newdaysToLoad});
 
             done(newdata);
         }
 
         const onUpdateDataPrevious = (done: (data: any) => void) => {
-            startDate = addDays(topDate, -newdaysToLoad);
+            //startDate = addDays(topDate, -newdaysToLoad);
+            startDate = topDate.plus({days: -newdaysToLoad});
             endDate = topDate;
 
             var newdata = GenerateBackwardMonth(startDate, endDate, false);
 
-            bottomDate = addDays(bottomDate, -newdaysToLoad);
+            bottomDate = bottomDate.plus({days: -newdaysToLoad}); //addDays(bottomDate, -newdaysToLoad);
 
             done(newdata);
         }
 
-        const onDataUpdated = (data: any) => {
+        /* const onDataUpdated = (data: any) => {
+            console.log("onDataUpdated");
+            console.log("data: ", data);
             if (data.length > 0) {
                 for (var k = 0; k < data.length; k++) {
                     if (data[k].date) {
-                        data[k].date = new Date(data[k].date);
+                        //data[k].date = new Date(data[k].date);
                     }
                 }
 
                 scrollerdata.value.splice(0);
                 scrollerdata.value = [...data];
             }
-        }
+
+            console.log("scrollerdata.value: ", scrollerdata.value);
+        } */
 
         const OnDateSelected = (selected: any) => {
-            ScrollToDate(selected.date);
+            ScrollToDate(CreateDate(selected.date));
         }
 
         const ScrollToDate = (date: any) => {
             // If date is loaded inside current calendar dates
-            var formatted_date = formatDate(date, "dd-MMM-yyyy");
+            
+            var formatted_date = date.toFormat("dd-MMM-yyyy");
             var cellPosition = scrollerref.value.GetCellsPosition(formatted_date);
 
             if (cellPosition >= 0) {
                 scrollerref.value.ScrollTo(cellPosition);
             } else {
                 console.log("Date Outside Loaded Dates");
-                //GenerateDays(date);
-                //this.$refs.scrollerref.SetAnimateNext(nextdata);
+                
                 var targetdate_id = formatted_date;
+                console.log("targetdate_id: ", targetdate_id);
+
                 var initialDays = GetInitialDays(date);
                 //scrollerdata.value = [];
                 //scrollerdata.value.push(...initialDays);
@@ -970,7 +979,7 @@ export default defineComponent({
             return (data: any) => {
                 let final: Array < any > = [];
                 let date = data.date;
-                var formatted_date = formatDate(date, "dd-MMM-yyyy");
+                var formatted_date = date.toFormat("dd-MM-yyyy");
                 let cellevents = eventscache[formatted_date];
 
                 if (cellevents) {
@@ -979,13 +988,13 @@ export default defineComponent({
                             if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
                                 if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
                                     if (cellevents[f].index < fiteventsnumber.value) {
-                                        if (daysMatch(cellevents[f].startdate, date)) {
+                                        if (daysMatchLuxon(cellevents[f].startdate, date)) {
                                             if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
                                                 final.push(cellevents[f]);
                                             }
                                         } else {
-                                            if (date.getDay() === 0) {
-                                                let days = getDiffInDays(cellevents[f].enddate, date);
+                                            if (date.day === 0) {
+                                                let days = getDiffInDaysLuxon(cellevents[f].enddate, date);
                                                 if (days > 0) {
                                                     if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
                                                         final.push(cellevents[f]);
@@ -999,13 +1008,13 @@ export default defineComponent({
                         }
                     }
                 } else {
-                    //console.log("cellevents is null");
+                    
                 }
 
                 if (!Array.isArray(final)) {
                     final = [];
                 }
-
+ 
                 return final;
             };
         });
@@ -1014,7 +1023,7 @@ export default defineComponent({
             return (data: any) => {
                 let final: Array < any > = [];
                 let date = data.date;
-                var formatted_date = formatDate(date, "dd-MMM-yyyy");
+                var formatted_date = date.toFormat("dd-MM-yyyy");
                 let cellevents = eventscache[formatted_date];
 
                 if (cellevents) {
@@ -1043,6 +1052,7 @@ export default defineComponent({
         });
 
         onMounted(() => {
+            UpdateLocaleStrings();
             UpdateEvents();
             GenerateDays();
             UpdateCurrentMonth();
@@ -1086,10 +1096,10 @@ export default defineComponent({
             morepanel_status,
             morepanel_cell_id,
             scrollanimate,
+            dayslocale,
             OnScroll,
             onUpdateDataNext,
             onUpdateDataPrevious,
-            onDataUpdated,
             CalculateEventHeight,
             //EventsStartFrom,
             GetEventsFontsize,

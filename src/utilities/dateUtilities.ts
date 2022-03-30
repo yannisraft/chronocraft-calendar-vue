@@ -1,3 +1,4 @@
+const { DateTime, Interval } = require("luxon");
 export const addDays = (date: Date, days: number): Date => {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -9,9 +10,19 @@ export const getDiff = (d1: Date, d2: Date): number => {
     return result;
 };
 
+export const getDiffLuxon = (d1: any, d2: any): number => {
+    const result = d1.toSeconds() - d2.toSeconds();
+    return result;
+};
+
 export const getDiffInDays = (d1: Date, d2: Date): number => {
     var result = d1.getTime() - d2.getTime();
-    return Math.ceil(result / (1000 * 60 * 60 * 24));;
+    return Math.ceil(result / (1000 * 60 * 60 * 24));
+};
+
+export const getDiffInDaysLuxon = (d1: any, d2: any): number => {
+    const result = d1.toSeconds() - d2.toSeconds();
+    return Math.ceil(result / (60 * 60 * 24));
 };
 
 export const daysMatch = (d1: Date, d2: Date): boolean => {
@@ -20,57 +31,15 @@ export const daysMatch = (d1: Date, d2: Date): boolean => {
         d1.getFullYear() == d2.getFullYear()
 }
 
+export const daysMatchLuxon = (d1: any, d2: any): boolean => {
+    return d1.day == d2.day &&
+        d1.month == d2.month &&
+        d1.year == d2.year
+}
+
 export const twoDigitPad = (num: number): string => {
     return num < 10 ? ("0" + String(num)) : String(num);
 }
-
-// nOT wORKING? 
-// https://stackoverflow.com/questions/948532/how-to-convert-a-date-to-utc
-//
-export const dateWithTimeZone = (locale: string, timeZone: string, indate: Date): Date => {
-    let year = indate.getFullYear();
-    let month = indate.getMonth();
-    let day = indate.getDate();
-    let hour = indate.getHours();
-    let minute = indate.getMinutes();
-    let second = indate.getSeconds();
-
-    // e.x. dateWithTimeZone("America/Los_Angeles",2019,8,8,0,0,0)
-    let date = new Date(Date.UTC(year, month, day, hour, minute, second));
-
-    let utcDate = new Date(date.toLocaleString(locale, { timeZone: "UTC" }));
-    let tzDate = new Date(date.toLocaleString(locale, { timeZone: timeZone }));
-    let offset = utcDate.getTime() - tzDate.getTime();
-
-    date.setTime(date.getTime() + offset);
-    return date;
-}
-
-export function convertLocalDateToUTCIgnoringTimezone(date: Date) {
-    const timestamp = Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds(),
-      date.getMilliseconds(),
-    );
-  
-    return new Date(timestamp);
-  }
-  
-  export function convertUTCToLocalDateIgnoringTimezone(utcDate: Date) {
-    return new Date(
-      utcDate.getUTCFullYear(),
-      utcDate.getUTCMonth(),
-      utcDate.getUTCDate(),
-      utcDate.getUTCHours(),
-      utcDate.getUTCMinutes(),
-      utcDate.getUTCSeconds(),
-      utcDate.getUTCMilliseconds(),
-    );
-  }
 
 export const formatDate = (date: any, patternStr: string): string => {
     var monthNames = [
@@ -162,7 +131,33 @@ export const enumerateDaysBetweenDates = (
         }
     }
 
-    //dates.push(lastDate);
+    return dates;
+};
+
+export const enumerateDaysBetweenDatesLuxon = (
+    startDate: any,
+    endDate: any
+): any[] => {
+    var dates: any[] = [];
+
+    var currDate: any;
+    let lastDate: any;
+
+    currDate = startDate.set({hour: 0, minutes: 0, seconds: 0});
+    lastDate = endDate.set({hour: 0, minutes: 0, seconds: 0});
+
+    dates.push(currDate);
+
+    var diff = getDiffLuxon(currDate, lastDate);
+
+    var testDate = currDate;
+    if (diff < 0) {
+        while (getDiffLuxon(testDate, lastDate) < 0) {
+            //testDate = addDays(testDate, 1);
+            testDate = testDate.plus({ days: 1 });
+            dates.push(testDate);
+        }
+    }
 
     return dates;
 };
@@ -182,7 +177,7 @@ export const enumerateStringDaysBetweenDates = (
     currDate.setHours(0, 0, 0, 0);
     lastDate.setHours(0, 0, 0, 0);
 
-    dates.push(formatDate(currDate, 'dd-MMM-yyyy'));
+    dates.push(formatDate(currDate, 'dd-MM-yyyy'));
 
     var diff = getDiff(currDate, lastDate);
 
@@ -190,11 +185,11 @@ export const enumerateStringDaysBetweenDates = (
     if (diff < 0) {
         while (getDiff(testDate, lastDate) < 0) {
             testDate = addDays(testDate, 1);
-            dates.push(formatDate(testDate, 'dd-MMM-yyyy'));
+            dates.push(formatDate(testDate, 'dd-MM-yyyy'));
         }
     }
 
-    dates.push(formatDate(lastDate, 'dd-MMM-yyyy'));
+    dates.push(formatDate(lastDate, 'dd-MM-yyyy'));
 
     return dates;
 };
@@ -202,6 +197,13 @@ export const enumerateStringDaysBetweenDates = (
 export const checkIfWeekendDay = (date: Date): boolean => {
     var isWeekend = false;
     var dayOfWeek = date.getDay();
+    isWeekend = (dayOfWeek === 6) || (dayOfWeek === 0);
+    return isWeekend;
+};
+
+export const checkIfWeekendDayLuxon = (date: any): boolean => {
+    var isWeekend = false;
+    var dayOfWeek = date.weekday - 1;
     isWeekend = (dayOfWeek === 6) || (dayOfWeek === 0);
     return isWeekend;
 };
