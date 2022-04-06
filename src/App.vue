@@ -1,15 +1,25 @@
 <template>
-<h1>ChronoCraft Calendar Test Playground</h1>
-<Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent" timezone="America/New_York" locale="el-GR" :events="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
-    <!-- <template v-slot:header="slotProps">
+<div class="ccr-panel" style="width: 80%; margin: 0px auto;">
+    <h1>ChronoCraft Calendar Test Playground</h1>
+    <!-- Variation for stylus :monthcolorvariations="['#332c58','#3f366a','#4c417e','#3f366a']" -->
+    <Calendar @on-scroll="OnScroll" @on-delete-event="RemoveEvent"  timezone="America/New_York" locale="el-GR" v-model="events" :eventtypes="eventtypes" :weekendcolored="true" class="calendar" :cellheight="180" :cellsquared="false" :height="400">
+        <!-- <template v-slot:header="slotProps">
         <span>{{ slotProps.headerlabel }}</span>
     </template>
     <template v-slot:headercell="slotProps">
         <span>{{ slotProps.daylabel.title }}</span>
     </template> -->
-</Calendar>
-<button @click="RemoveEvent(7)">Remove</button>
-<button @click="AddEvent()">Add</button>
+    </Calendar>
+    <div style="margin-top: 20px;">
+    <button @click="RemoveEvent(7)" class="ccr-normal stylemodebtn" style="margin-left: 10px;">Remove</button>
+    <button @click="AddEvent()" class="ccr-normal stylemodebtn" style="margin-left: 10px;">Add</button>
+    </div>
+    <div style="margin-top: 20px;">
+        <button @click="ApplyTheme('Flat')" class="stylemodebtn" style="margin-left: 10px;" type="button">Theme Flat</button>
+        <button @click="ApplyTheme('Stylus')" class="stylemodebtn" style="margin-left: 10px;" type="button">Theme Stylus</button>
+        <button @click="ApplyTheme('Opus')" class="stylemodebtn" style="margin-left: 10px;" type="button">Theme Opus</button>
+    </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -18,7 +28,15 @@ import {
 } from 'vue';
 import Calendar from './components/Calendar/Calendar.vue';
 
-const { DateTime } = require("luxon");
+import { Theme } from "./interfaces";
+import {
+    ThemeManager,
+    formatDate
+} from "./utilities/index";
+
+const {
+    DateTime
+} = require("luxon");
 
 export default defineComponent({
     name: 'App',
@@ -27,11 +45,25 @@ export default defineComponent({
     },
     data: function () {
         return {
-            eventtypes: [
+            themeManager: new ThemeManager(),
+            themes: [
                 {
+                    name: "Flat",
+                    link: "/themes/ccr.theme.flat/ccr.theme.flat.css"
+                },
+                {
+                    name: "Stylus",
+                    link: "/themes/ccr.theme.stylus/ccr.theme.stylus.css"
+                },
+                {
+                    name: "Opus",
+                    link: "/themes/ccr.theme.opus/ccr.theme.opus.css"
+                }
+            ],
+            eventtypes: [{
                     type: 'meeting',
                     title: 'Meeting',
-                    color: "#f7a47d"
+                    color: "#ffa1b4"
                 },
                 {
                     type: 'work',
@@ -50,8 +82,8 @@ export default defineComponent({
                     type: 'meeting',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-21T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-22T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-21T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-22T10:20:30Z'),
                 },
                 {
                     id: 2,
@@ -59,8 +91,8 @@ export default defineComponent({
                     type: 'work',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-22T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-23T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-22T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-23T10:20:30Z'),
                 },
                 {
                     id: 3,
@@ -68,8 +100,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-26T10:20:30Z'),
                 },
                 {
                     id: 4,
@@ -77,8 +109,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-26T10:20:30Z'),
                 },
                 {
                     id: 5,
@@ -86,8 +118,8 @@ export default defineComponent({
                     type: 'work',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-26T10:20:30Z'),
                 },
                 {
                     id: 6,
@@ -95,8 +127,8 @@ export default defineComponent({
                     type: 'meeting',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-23T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-26T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-23T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-26T10:20:30Z'),
                 },
                 {
                     id: 7,
@@ -104,8 +136,8 @@ export default defineComponent({
                     type: 'meeting',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-25T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-28T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-25T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-28T10:20:30Z'),
                 },
                 {
                     id: 8,
@@ -113,24 +145,24 @@ export default defineComponent({
                     type: 'work',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-24T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-03-01T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-24T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-04-01T10:20:30Z'),
                 },
                 {
                     id: 9,
                     title: "Event #9",
                     type: 'work',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-18T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-21T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-18T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-21T10:20:30Z'),
                 },
                 {
                     id: 10,
                     title: "Event #10",
                     type: 'work',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-20T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-02-22T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-20T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-03-22T10:20:30Z'),
                 },
                 {
                     id: 11,
@@ -138,8 +170,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-02-24T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-03-01T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-03-24T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-04-01T10:20:30Z'),
                 }
             ]
         }
@@ -149,21 +181,32 @@ export default defineComponent({
             //
         },
         AddEvent() {
-            this.events.push({
+            this.events = [...this.events, {
                 id: 12,
                 title: "Event #12",
                 type: 'break',
                 category: 'test',
                 description: "on three ",
-                startdate: DateTime.fromISO('2022-03-02T10:20:30Z'),
-                enddate: DateTime.fromISO('2022-03-07T10:20:30Z'),
-            });
+                startdate: DateTime.fromISO('2022-04-01T10:20:30Z'),
+                enddate: DateTime.fromISO('2022-04-07T10:20:30Z'),
+            }];
         },
         RemoveEvent(eventid: number) {
             this.events = this.events.filter(function (event: any) {
                 return event.id != eventid;
             });
+        },
+        ApplyTheme(themename: string) {
+            let theme = this.themes.find(i => i.name === themename);
+            if(theme)
+            {
+                this.themeManager.theme = theme.name;
+            }
         }
+    },
+    mounted() {       
+        this.themeManager.setThemes(this.themes);
+        this.themeManager.theme = 'Stylus';
     }
 });
 </script>

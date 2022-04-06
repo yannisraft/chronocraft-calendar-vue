@@ -13,3 +13,4 @@ export default Plugin
 
 // Allow component use individually
 export * from './components';
+export * from './utilities/thememanager';

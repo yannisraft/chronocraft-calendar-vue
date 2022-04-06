@@ -203,8 +203,8 @@ export const checkIfWeekendDay = (date: Date): boolean => {
 
 export const checkIfWeekendDayLuxon = (date: any): boolean => {
     var isWeekend = false;
-    var dayOfWeek = date.weekday - 1;
-    isWeekend = (dayOfWeek === 6) || (dayOfWeek === 0);
+    var dayOfWeek = date.weekday;    
+    isWeekend = (dayOfWeek === 7) || (dayOfWeek === 6);
     return isWeekend;
 };
 

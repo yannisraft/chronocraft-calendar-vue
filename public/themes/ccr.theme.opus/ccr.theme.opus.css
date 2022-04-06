@@ -1,0 +1,169 @@
+body
+{
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #e7e7e7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+
+h1, h2, h3, h4, h5 {
+    color: #200e32;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+h3 {
+    font-size: 1.17em;
+    font-weight: 400;
+}
+
+h4 {
+    font-size: 1.0em;
+    line-height: 21pt;
+}
+
+
+
+
+input {
+    height: 30px;
+    border: 0px solid #fff;
+    box-shadow: rgb(0 0 0 / 18%) 0px 1px 1px;
+    text-indent: 10px;
+    min-width: 290px;
+    background-color: #f7f7f7;
+    padding: 5px;
+    color: #200e32;
+    font-weight: 600;
+    font-size: 1.17em;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: none;
+}
+
+input:focus-visible
+{
+    outline: 1px solid #200e32;
+    border: 0px;
+}
+
+button {
+    background-color: #200e32;
+    border: 0px solid;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 10pt;
+    box-shadow: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+p {
+    color: #200e32;
+}
+
+.ccr-panel
+{
+    background-color: #ffffff;
+    box-shadow: 6.6px 7.3px 11.6px -10px rgb(0 0 0 / 8%), 16px 19px 62px -20px rgb(0 0 0 / 8%);
+    padding: 20px;
+}
+
+.ccr-icon {
+    color: #ff137f;
+}
+
+/* -- Calendar -- */
+.ccr-calendar-header {
+    background-color: #200e32;
+    margin-bottom: 10px;
+}
+
+.ccr-calendar-header h1 {
+    color: #ffffff;
+}
+
+/* -- Datepicker -- */
+
+.ccr-datepicker-panel
+{
+    box-shadow:
+  7.5px 10px 10.6px -20px rgba(0, 0, 0, 0.17),
+  30px 40px 57px -20px rgba(0, 0, 0, 0.46);
+  background-color: #f7f7f7;
+  border: 0px;
+}
+
+.ccr-datepicker-header-year{
+    background-color: #200e32;
+    height: 49px;
+}
+
+.ccr-datepicker-header-year h4 {
+    color: #ffffff;
+    margin: 13px 0px;
+}
+
+.datepicker-header-month {
+    background-color: #726b97;
+}
+
+.datepicker-header-month h3
+{
+    margin-top: 8px;
+    color: #ffb967;
+}
+
+.rangeday
+{
+    background-color: #ffdec4;
+}
+
+.dayselected-start, .dayselected, .dayselected-end, .yearselect-selected, .monthselect-selected
+{
+    background-color: #ffbe8b;
+}
+
+.ccr-datepicker-header-year h4:hover, .datepicker-header-month h3:hover
+{
+    color: #ff137f;
+}
+
+.today {
+    background-color: #ff9eca;
+}
+
+.datepicker-arrows:hover
+{
+    color: #ff137f;
+}
+
+.ccr-weekdays {
+    margin-right: 20px;
+    margin-left: 10px;
+}
+
+.scroller-cell {
+    box-shadow: none;
+}
+
+.litoday {
+    background-color: #f7ecf1 !important;
+}
+
+.ccr-closebtn, .ccr-deletebtn {
+    color: #200e32;
+    padding: 0px;
+}

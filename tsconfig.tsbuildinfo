@@ -292,18 +292,28 @@
         "affectsGlobalScope": false
       },
       "./src/utilities/dateUtilities.ts": {
-        "version": "1b7813480b6cca8570e01aa863f24c7a32512819776bc0bfb203b6c2a2581045",
+        "version": "530827ce9f975aecc1a9fc37fef443fdff6361e2b676126eb9ed79085dfe85a9",
         "signature": "68896d747867fef686a4079f4b520478bc408334aafee887930d48c2e4c5c6bb",
         "affectsGlobalScope": false
       },
+      "./src/interfaces/index.ts": {
+        "version": "fc3e57583f3b784c756cadbf639e7fa2689a5ef937ac20116f6af365f6cb78ff",
+        "signature": "3a66f833cf3c931b2293684c844c695a4258d10c06c64e4e32c412d206385ebd",
+        "affectsGlobalScope": false
+      },
+      "./src/utilities/thememanager.ts": {
+        "version": "773f96fdef33a0d8f8e97bca45035d19b292a88671922a1b740488cae016e124",
+        "signature": "ed5b13ab819cb9aad4757b05f00b2da7290a02c69765cd1c693d4a50e26313ff",
+        "affectsGlobalScope": false
+      },
       "./src/utilities/index.ts": {
-        "version": "65082ff3ab1a66ff32700761abc135926bca42e72d5d1a9e25e55864d74e20d9",
-        "signature": "65082ff3ab1a66ff32700761abc135926bca42e72d5d1a9e25e55864d74e20d9",
+        "version": "c651eb135e895fccacc7e273b9b286e3e07cde67ea090293d0874446f4cbecf2",
+        "signature": "c651eb135e895fccacc7e273b9b286e3e07cde67ea090293d0874446f4cbecf2",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "a9ecbbc4dd8dc72cbe332884df14f9bbba33e81fb16f5684543e23847fe6034e",
-        "signature": "05118c2701f453ad184ae55e684cb7b1cd03c4209f48673d926b3fa4581a4aed",
+        "version": "a5263b019ce3cb3975ad7f6a4414e7ae16beb83d1d5259846c4dff90e89e07b8",
+        "signature": "ba2ca8da05ba9bc929a3d97deaff3b56cb4641761d6dc4c1faf88c2cc128deff",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/index.ts": {
@@ -317,13 +327,13 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "42aaae24b64d8cf1518ab6bf3dadb5177c4705593300b3ad2f130e88032c9f85",
-        "signature": "834e5463d13db75be9363c4276d42cffc7af3a8149d4780d313ec4e7c54fee1f",
+        "version": "de9b6e9ec06172c0f507e542e8f175e289161a69feb3ac32bb0684e2cfd8f728",
+        "signature": "f3fd8510a1209a633776071b3f4adbeaa46c9af6bb36aebb7489ae446e172712",
         "affectsGlobalScope": false
       },
       "./src/App.vue.ts": {
-        "version": "e7681d392e874932fa742e1244abab0c764e435d918433ed4fef0025b22afe12",
-        "signature": "ac2b3fb071200af97abc5a417775054b1bf4a47264323d716fba7c8798d7e2ff",
+        "version": "e9267a1f75516dee0cfd88768ef1430ae4a2add9d7ce97552ac8944199976907",
+        "signature": "42bb698a67411b0d519fc7a9bbe63fe14033c0ae8d3c2bc8f5fc3e3eed7f8323",
         "affectsGlobalScope": false
       },
       "./src/main.ts": {
@@ -629,7 +639,9 @@
       ],
       "./src/App.vue.ts": [
         "./node_modules/vue/dist/vue.d.ts",
-        "./src/components/Calendar/Calendar.vue.ts"
+        "./src/components/Calendar/Calendar.vue.ts",
+        "./src/interfaces/index.ts",
+        "./src/utilities/index.ts"
       ],
       "./src/components/Calendar/Calendar.vue.ts": [
         "./node_modules/chronocraft-datepicker-vue/types/index.d.ts",
@@ -654,7 +666,8 @@
       ],
       "./src/index.ts": [
         "./node_modules/vue/dist/vue.d.ts",
-        "./src/components/index.ts"
+        "./src/components/index.ts",
+        "./src/utilities/thememanager.ts"
       ],
       "./src/main.ts": [
         "./node_modules/vue/dist/vue.d.ts",
@@ -664,7 +677,11 @@
         "./node_modules/vue/dist/vue.d.ts"
       ],
       "./src/utilities/index.ts": [
-        "./src/utilities/dateUtilities.ts"
+        "./src/utilities/dateUtilities.ts",
+        "./src/utilities/thememanager.ts"
+      ],
+      "./src/utilities/thememanager.ts": [
+        "./src/interfaces/index.ts"
       ],
       "./tests/unit/example.spec.ts": [
         "./node_modules/@vue/test-utils/dist/index.d.ts",
@@ -793,7 +810,8 @@
         "./node_modules/@vue/runtime-dom/dist/runtime-dom.d.ts"
       ],
       "./src/App.vue.ts": [
-        "./node_modules/vue/dist/vue.d.ts"
+        "./node_modules/vue/dist/vue.d.ts",
+        "./src/utilities/index.ts"
       ],
       "./src/components/Calendar/Calendar.vue.ts": [
         "./node_modules/vue/dist/vue.d.ts"
@@ -815,13 +833,18 @@
       ],
       "./src/index.ts": [
         "./node_modules/vue/dist/vue.d.ts",
-        "./src/components/index.ts"
+        "./src/components/index.ts",
+        "./src/utilities/thememanager.ts"
       ],
       "./src/shims-vue.d.ts": [
         "./node_modules/vue/dist/vue.d.ts"
       ],
       "./src/utilities/index.ts": [
-        "./src/utilities/dateUtilities.ts"
+        "./src/utilities/dateUtilities.ts",
+        "./src/utilities/thememanager.ts"
+      ],
+      "./src/utilities/thememanager.ts": [
+        "./src/interfaces/index.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -914,10 +937,12 @@
       "./src/components/TimeClock/index.ts",
       "./src/components/index.ts",
       "./src/index.ts",
+      "./src/interfaces/index.ts",
       "./src/main.ts",
       "./src/shims-vue.d.ts",
       "./src/utilities/dateUtilities.ts",
       "./src/utilities/index.ts",
+      "./src/utilities/thememanager.ts",
       "./tests/unit/example.spec.ts"
     ],
     "affectedFilesPendingEmit": [
@@ -939,6 +964,10 @@
       ],
       [
         "./src/index.ts",
+        0
+      ],
+      [
+        "./src/main.ts",
         0
       ]
     ]

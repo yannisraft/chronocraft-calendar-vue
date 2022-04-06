@@ -1,0 +1,50 @@
+body
+{
+    font-family: 'Advent Pro', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #ffffff;
+}
+
+
+h1, h2, h3, h4, h5 {
+    color: #5a5a5a;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.17em;
+}
+
+.ccr-panel
+{
+    border-radius: 0px;
+    background-color: #f1f1f1;
+    box-shadow: rgb(0 0 0 / 24%) 0px 3px 2px;
+    padding: 20px;
+}
+
+.ccr-icon {
+    color: #5a5a5a;
+}
+
+button {
+    box-shadow: rgb(0 0 0 / 24%) 0px 2px 1px;
+    border: 1px solid #c5c5c5;
+    padding: 5px 10px;
+}
+
+input {
+    height: 25px;
+    border: 1px solid #c5c5c5;
+    box-shadow: rgb(0 0 0 / 24%) 0px 3px 2px;
+    text-indent: 10px;
+    min-width: 240px;
+}

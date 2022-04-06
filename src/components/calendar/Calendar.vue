@@ -1,16 +1,16 @@
 <template>
-<div class="calendar-container">
-    <header>
+<div class="ccr-calendar-container">
+    <header class="ccr-calendar-header">
         <slot :headerlabel="monthLabel" name="header">
             <h1 class="calendar-header">{{ monthLabel }}</h1>
             <DatePicker :rangepicker="false" :showselecteddate="true" class="calendar-datepicker" @on-date-selected="OnDateSelected">
                 <template v-slot:inputfield="slotProps">
-                    <span class="material-icons-outlined" style="cursor: pointer;">date_range</span>
+                    <span class="ccr-icon material-icons-outlined" style="cursor: pointer;">date_range</span>
                 </template>
             </DatePicker>
         </slot>
     </header>
-    <ul class="weekdays">
+    <ul class="ccr-weekdays">
         <li v-for="daylabel in dayslocale" :key="daylabel.title">
             <slot :daylabel="daylabel" name="headercell">
                 <abbr :title="daylabel.short">{{ daylabel.title }}</abbr>
@@ -18,25 +18,25 @@
         </li>
     </ul>
     <div class="container">
-        <Scroller  v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
+        <Scroller v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
             <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgcolor }">
-                <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
+                <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'ccr-daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
                     <div class="cell-label-container">
                         <span class="cell-label-num">{{ slotProps.data.num }} <span class="cell-label-month">{{ slotProps.data.month }}</span></span>
                     </div>
                     <div class="cell-events-container">
                         <!-- <div @click="OpenInfoPanel($event, slotProps.data)" v-for="(event, index) in EventsStartFrom(slotProps.data.events, slotProps.data.date, slotProps.data)" :key="event.id" class="event" :style="[{'background-color': event.color, 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]"> -->
-                        <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in eventsFilterVisible(slotProps.data)" :key="event.id" class="event" :style="[{'background-color': GetColor(event), 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]">
+                        <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in eventsFilterVisible(slotProps.data)" :key="event.id" class="ccr-event" :style="[{'background-color': GetColor(event), 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]">
                             <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
                     <label v-if="eventsFilterNonVisible(slotProps.data).length > 0" class="cell-events-more" @mouseover="ShowMorePanel($event, slotProps.data)">More...</label>
                     <div class="cell-dotevents-container">
-                        <div v-for="(event, index) in eventsFilterNonVisible(slotProps.data)" :key="event.id" class="dotevent" :style="{'background-color': GetColor(event)}">
+                        <div v-for="(event, index) in eventsFilterNonVisible(slotProps.data)" :key="event.id" class="ccr-dotevent" :style="{'background-color': GetColor(event)}">
                         </div>
                     </div>
                     <div :class="['tooltippanel', {tooltiphidden: !slotProps.data.showtooltip}]" id="tooltippanel" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :style="{'top': tooltip_top, 'left': tooltip_left, 'width': tooltip_w, 'height': tooltip_h}">
-                        <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in tooltip_events" :key="event.id" class="event" :style="[{'position':'relative','background-color': GetColor(event), 'width':'calc(100% - 10px)', 'height': '20px'}]">
+                        <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in tooltip_events" :key="event.id" class="ccr-event" :style="[{'position':'relative','background-color': GetColor(event), 'width':'calc(100% - 10px)', 'height': '20px'}]">
                             <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                 <div ref="infopanelref" :class="['infopanel', {infopanelhidden: infopanelhidden}]">
                     <h4>{{ infopanel_title }}</h4>
                     <div class="infodate">{{ infopanel_date }}</div>
-                    <div class="dotevent" :style="{'background-color': infopanel_eventcolor}">
+                    <div class="ccr-dotevent" :style="{'background-color': infopanel_eventcolor}">
                         <h6>Type: <span></span></h6>
                     </div>
                     <p>{{ infopanel_description }}</p>
@@ -74,7 +74,8 @@ import {
     onMounted,
     onUpdated,
     watch,
-    computed
+    computed,
+    getCurrentInstance
 } from "vue";
 
 import {
@@ -110,7 +111,7 @@ export default defineComponent({
         DatePicker
     },
     props: {
-        data: {
+        modelValue: {
             type: Array,
             default: () => {
                 return []
@@ -175,7 +176,7 @@ export default defineComponent({
         monthcolorvariations: {
             type: Array,
             default: () => {
-                return ["#f9f7f7", "#edebeb", "#f9f7f7", "#ffffff"]
+                return ["#f9f7f7", "#edebeb", "#f9f7f7", "#f5f5f5"]
             }
         },
         autodaylabels: {
@@ -216,12 +217,12 @@ export default defineComponent({
                 ];
             },
         },
-        events: {
+        /* events: {
             type: Array,
             default: () => {
                 return [];
             }
-        },
+        }, */
         eventtypes: {
             type: Array,
             default: () => {
@@ -231,7 +232,8 @@ export default defineComponent({
     },
     setup(props, context) {
         let monthLabel = ref("");
-        let scrollerdata: any = ref(props.data);
+        let scrollerdata: any = ref([]);
+        let eventsdata: any = ref(props.modelValue);
         let newcellslength = 30;
         let bottomDate: any = null;
         let topDate: any = null;
@@ -347,7 +349,7 @@ export default defineComponent({
 
             if (totaleventsonmore > 0) {
 
-                let daycell: any = document.querySelector(".daycell");
+                let daycell: any = document.querySelector(".ccr-daycell");
                 var _height = totaleventsonmore * (eventheight.value + props.eventmargin);
                 tooltip_w.value = daycell.offsetWidth + "px";
                 tooltip_h.value = _height + "px";
@@ -417,7 +419,7 @@ export default defineComponent({
         // Calculates the maximum events that fit in the container
         // & the final height of the event
         function CalculateEventHeight() {
-            let daycell: any = document.querySelector(".daycell");
+            let daycell: any = document.querySelector(".ccr-daycell");
             let celleventscontainer: any = document.querySelector(".cell-events-container");
             eventheight.value = 0;
             if (daycell) {
@@ -433,16 +435,16 @@ export default defineComponent({
         }
 
         function CalculateEventWidth(date: any, dateid: any, event: any) {
-            let daycell: any = document.querySelector(".daycell");
+            let daycell: any = document.querySelector(".ccr-daycell");
             let dayIndex = date.weekday;
             var widthmultiplier = event.duration;
 
-            if (widthmultiplier > (6 - (dayIndex) + 1)) widthmultiplier = (6 - (dayIndex) + 1);
+            if (widthmultiplier > (6 - (dayIndex-1) + 1)) widthmultiplier = (6 - (dayIndex-1) + 1);
             var marginmultiplier = widthmultiplier;
             if (marginmultiplier === 1) marginmultiplier = 0;
 
             let finalWidth = (daycell.offsetWidth * widthmultiplier) - 2 * props.eventmargin + marginmultiplier * props.eventmargin;
-            if (date.day === 0) {
+            if (date.weekday === 1) {
                 widthmultiplier = getDiffInDaysLuxon(event.enddate, date);
                 finalWidth = daycell.offsetWidth * widthmultiplier - 2 * props.eventmargin;
             }
@@ -559,8 +561,12 @@ export default defineComponent({
                 var final = [];
                 for(var f=0;f< luxondays_long.length; f++)
                 {
-                    final.push({title: luxondays_long[f],short: luxondaysshort[f]});
+                    final.push({title: luxondays_long[f], short: luxondaysshort[f]});
                 }
+                var temp = final[final.length-1];
+                final.pop();
+                final.unshift(temp);
+
                 dayslocale.value = final;
             } else {
                 dayslocale.value = props.dayslabels;
@@ -571,7 +577,7 @@ export default defineComponent({
             eventscache = {};
 
             // 1. Sort Events by starting Date
-            const sortedevents_bydate = props.events.slice().sort((a: any, b: any) => a.startdate - b.startdate);
+            const sortedevents_bydate = props.modelValue.slice().sort((a: any, b: any) => a.startdate - b.startdate);
 
             // Sort eventscache events for each date by duration
             //const sortedevents_bydate = props.events.slice().sort((a: any, b: any) => b.duration - a.duration);
@@ -659,15 +665,13 @@ export default defineComponent({
             let d = CreateDate();
             
             if (basedate) d = basedate;
-            //let day = d.getDay();
-            let day = d.day;
+            let day = d.weekday;
+
+            console.log("day: ", day);
 
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
-                //var newdate = new Date(d.getTime());
                 var newdate = d;
-                
-                //newdate = addDays(newdate, -b);
                 newdate = newdate.plus({ days: -b });
 
                 var today = false;
@@ -796,24 +800,11 @@ export default defineComponent({
             let _padding = 10;
 
             let totaleventsonmore = DotEventsStartFrom(events, date).length;
-            //let totaleventsonmore = eventsFilterNonVisible({events: events, date: date}).length;
-
-            // OLD
-            /* if (events.length > 0 && fiteventsnumber.value > 0) {
-                for (var f = 0; f < events.length; f++) {
-                    if (events[f].index !== null && typeof events[f].index !== 'undefined') {
-                        if (events[f].index >= fiteventsnumber.value) {
-                            totaleventsonmore++;
-                        }
-                    }
-                }
-            } */
 
             style += "padding: " + _padding + "px;"
 
             if (totaleventsonmore > 0) {
-                console.log("event: ", event);
-                let daycell: any = document.querySelector(".daycell");
+                let daycell: any = document.querySelector(".ccr-daycell");
                 style += "width: " + daycell.offsetWidth + "px;";
                 var _height = totaleventsonmore * eventheight.value;
                 style += "height: " + _height + "px;bottom: -" + (_height + 2 * _padding + 5) + "px;"
@@ -824,7 +815,6 @@ export default defineComponent({
                 console.log("viewportOffsetleft: " + viewportOffsetleft);
 
                 let _scroller: any = document.querySelector(".scroller");
-                console.log("_scroller W: " + _scroller.offsetWidth);
                 style += "left: " + _left + "px;";
             } else {
                 style = "display: none;"
@@ -879,46 +869,24 @@ export default defineComponent({
 
         const onUpdateDataNext = (done: (data: any) => void) => {
             startDate = bottomDate;
-            //endDate = addDays(bottomDate, newdaysToLoad);
             endDate = bottomDate.plus({days: newdaysToLoad});
             bottomDate = endDate;
 
             var newdata = GenerateForwardMonth(startDate, endDate, false);
-
-            //topDate = addDays(topDate, newdaysToLoad);
             topDate = topDate.plus({days: newdaysToLoad});
 
             done(newdata);
         }
 
         const onUpdateDataPrevious = (done: (data: any) => void) => {
-            //startDate = addDays(topDate, -newdaysToLoad);
             startDate = topDate.plus({days: -newdaysToLoad});
             endDate = topDate;
 
             var newdata = GenerateBackwardMonth(startDate, endDate, false);
-
-            bottomDate = bottomDate.plus({days: -newdaysToLoad}); //addDays(bottomDate, -newdaysToLoad);
+            bottomDate = bottomDate.plus({days: -newdaysToLoad});
 
             done(newdata);
         }
-
-        /* const onDataUpdated = (data: any) => {
-            console.log("onDataUpdated");
-            console.log("data: ", data);
-            if (data.length > 0) {
-                for (var k = 0; k < data.length; k++) {
-                    if (data[k].date) {
-                        //data[k].date = new Date(data[k].date);
-                    }
-                }
-
-                scrollerdata.value.splice(0);
-                scrollerdata.value = [...data];
-            }
-
-            console.log("scrollerdata.value: ", scrollerdata.value);
-        } */
 
         const OnDateSelected = (selected: any) => {
             ScrollToDate(CreateDate(selected.date));
@@ -939,8 +907,6 @@ export default defineComponent({
                 console.log("targetdate_id: ", targetdate_id);
 
                 var initialDays = GetInitialDays(date);
-                //scrollerdata.value = [];
-                //scrollerdata.value.push(...initialDays);
                 scrollerref.value.SetAnimateNext(initialDays, () => {
                     console.log("UpdateCurrentMonth");
                     UpdateCurrentMonth();
@@ -987,13 +953,17 @@ export default defineComponent({
                         for (var f = 0; f < cellevents.length; f++) {
                             if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
                                 if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
+
                                     if (cellevents[f].index < fiteventsnumber.value) {
+                                        /* console.log("A: ", cellevents[f].startdate);
+                                        console.log("B: ", date); */
+
                                         if (daysMatchLuxon(cellevents[f].startdate, date)) {
                                             if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
                                                 final.push(cellevents[f]);
                                             }
                                         } else {
-                                            if (date.day === 0) {
+                                            if (date.weekday === 1) {
                                                 let days = getDiffInDaysLuxon(cellevents[f].enddate, date);
                                                 if (days > 0) {
                                                     if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
@@ -1063,14 +1033,15 @@ export default defineComponent({
         });
 
         // Watch prop value change and assign to value 'selected' Ref
-        watch(() => props.events, (newevents: any, oldevents: any) => {
-            //console.log("newevents: ",newevents);
+        watch(() => props.modelValue, (newevents: any, oldevents: any) => {
+            console.log("newevents: ",newevents);
             UpdateEvents();
         });
 
         return {
             monthLabel,
             scrollerdata,
+            eventsdata,
             newcellslength,
             mineventwidth,
             scrollerref,
@@ -1119,9 +1090,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import "./calendar.css";
-</style><style>
+
 .scroller {
     background: #ffffff !important;
 }

@@ -8,7 +8,7 @@ header {
     color: #fff;
     min-height: 2vh;
     text-align: center;
-    font-family: 'Quicksand', sans-serif;
+    
 }
 
 header h1 {
@@ -33,11 +33,11 @@ li {
     font-size: calc(13px + (21 - 16) * ((100vw - 300px) / (1600 - 300)));
 }
 
-ul.weekdays {
-    margin-bottom: 1em;
+ul.ccr-weekdays {
+    margin-bottom: 0.7em;
 }
 
-ul.weekdays li {
+ul.ccr-weekdays li {
     height: 4vw;
 }
 
@@ -57,16 +57,17 @@ ol.scrollercontent li {
     /* Likely future */
 }
 
-ul.weekdays abbr[title] {
+ul.ccr-weekdays abbr[title] {
     border: none;
     font-weight: 800;
     text-decoration: none;
-    font-family: 'Quicksand', sans-serif;
     font-weight: 500;
+    font-size: 15pt;
 }
 
-.calendar-container {
+.ccr-calendar-container {
     position: relative;
+    background-color: #f7f7f7;
 }
 
 .calendar-header {
@@ -83,12 +84,12 @@ ul.weekdays abbr[title] {
     left: 5pt;
     font-size: 2vw;
     color: #777;
-    font-family: 'Quicksand', sans-serif;
+    
     font-weight: 300;
 
 } */
 
-.daycell {
+.ccr-daycell {
     width: 100%;
     height: 100%;
     position: relative;
@@ -107,21 +108,19 @@ ul.weekdays abbr[title] {
     height: calc(2vw + 15pt);
 }
 
-.cell-label-container .cell-label-num {
+.cell-label-num {
     margin-left: 5pt;
     margin-top: 5pt;
     font-size: 3vw;
     color: #777;
-    font-family: 'Quicksand', sans-serif;
     font-weight: 300;
     position: relative;
 }
 
-.cell-label-container .cell-label-month {
+.cell-label-month {
     margin-left: 5pt;
     font-size: 1vw;
-    color: #777;
-    font-family: 'Quicksand', sans-serif;
+    color: #777;    
     font-weight: 300;
     position: absolute;
     bottom: 0pt;
@@ -146,26 +145,14 @@ ul.weekdays abbr[title] {
     left: 6px;
 }
 
-.dotevent {
+.ccr-dotevent {
     width: 10px;
     height: 10px;
     border-radius: 6px;
     margin-right: 6px;
 }
 
-/* .event {
-    align-self: stretch;
-    flex: 1 1 auto;
-    padding: 2px;
-    font-size: 9pt;
-    background: #95e5b8;
-    display: flex;
-    align-items: center;
-    border-radius: 6px;
-    margin: 0px 5px 5px 5px;
-} */
-
-.event {
+.ccr-event {
     position: absolute;    
     /* font-size: 9pt; */
     border-radius: 6px;
@@ -181,8 +168,8 @@ ul.weekdays abbr[title] {
           box-sizing: border-box;
 }
 
-.event label {
-    font-family: 'Quicksand', sans-serif;
+.ccr-event label {
+    
     padding-left: 10px;
     padding-right: 10px;
     cursor: pointer;
@@ -241,12 +228,12 @@ ul.weekdays abbr[title] {
     text-align: left;
 }
 
-.infopanel .dotevent {
+.infopanel .ccr-dotevent {
     margin: 8px 15px 8px 15px;
     position: relative;
 }
 
-.infopanel .dotevent h6 {
+.infopanel .ccr-dotevent h6 {
     display: inline;
     margin: 0px 15px 0px 15px;
     text-align: left;
@@ -286,7 +273,7 @@ ul.weekdays abbr[title] {
     transform: translate(-50%, 100%);
 }
 
-.deletebtn {
+.ccr-deletebtn {
     border: 0px solid;
     background: none;
     position: absolute;
@@ -295,7 +282,7 @@ ul.weekdays abbr[title] {
     cursor: pointer;
 }
 
-.closebtn {
+.ccr-closebtn {
     border: 0px solid;
     background: none;
     position: absolute;
@@ -319,11 +306,11 @@ ul.weekdays abbr[title] {
 
 @media all and (max-width: 800px) {
 
-    ul.weekdays li {
+    ul.ccr-weekdays li {
         font-size: 0;
     }
 
-    ul.weekdays>li abbr:after {
+    ul.ccr-weekdays>li abbr:after {
         content: attr(title);
         font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
         text-align: center;

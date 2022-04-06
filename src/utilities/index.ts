@@ -1,2 +1,3 @@
 import { addDays, getDiff, getDiffInDays, getDiffLuxon, getDiffInDaysLuxon, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateDaysBetweenDatesLuxon, enumerateStringDaysBetweenDates, checkIfWeekendDay, checkIfWeekendDayLuxon, daysMatch, daysMatchLuxon, deepCopy } from "./dateUtilities";
-export { addDays, getDiff, getDiffInDays, getDiffLuxon, getDiffInDaysLuxon, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateDaysBetweenDatesLuxon, enumerateStringDaysBetweenDates, checkIfWeekendDay, checkIfWeekendDayLuxon, daysMatch, daysMatchLuxon, deepCopy };
+import { ThemeManager } from "./thememanager";
+export { ThemeManager, addDays, getDiff, getDiffInDays, getDiffLuxon, getDiffInDaysLuxon, twoDigitPad, formatDate, enumerateDaysBetweenDates, enumerateDaysBetweenDatesLuxon, enumerateStringDaysBetweenDates, checkIfWeekendDay, checkIfWeekendDayLuxon, daysMatch, daysMatchLuxon, deepCopy };
