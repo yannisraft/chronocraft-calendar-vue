@@ -206,7 +206,7 @@ export default defineComponent({
     },
     mounted() {       
         this.themeManager.setThemes(this.themes);
-        this.themeManager.theme = 'Stylus';
+        //this.themeManager.theme = 'Stylus';
     }
 });
 </script>

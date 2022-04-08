@@ -191,3 +191,36 @@ ul.ccr-weekdays li {
     color: #fff;
 }
 
+.bgclass-a {
+    background-color: #332c58;
+}
+
+.bgclass-b {
+    background-color: #3f366a;
+}
+
+.bgclass-c {
+    background-color: #4c417e;
+}
+
+.bgclass-d {
+    background-color: #3f366a;
+}
+
+.calendarmodebtn {
+    padding: 5px 10px;
+}
+
+.ccr-calendarmode {
+    position: absolute;
+    top: 27px;
+    right: 69px;
+}
+
+.ccr-calendarmodebtn.active {
+    background-color: #fb7785;
+}
+
+.ccr-dayview {
+    background: #1e193b;
+}
