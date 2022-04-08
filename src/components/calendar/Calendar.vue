@@ -8,6 +8,11 @@
                     <span class="ccr-icon material-icons-outlined" style="cursor: pointer;">date_range</span>
                 </template>
             </DatePicker>
+            <div class="ccr-calendarmode">
+                <!-- <span @click="SwitchToDayView()" class="ccr-icon material-icons-outlined" style="cursor: pointer;">view_day</span> -->
+                <button @click="SwitchToMonthView()" :class="['ccr-normal', 'ccr-calendarmodebtn', { active: calendarmode === 'month' }]" style="margin-left: 10px;">Month</button>
+                <button @click="SwitchToDayView()" :class="['ccr-normal', 'ccr-calendarmodebtn', { active: calendarmode === 'day' }]" style="margin-left: 10px;">Day</button>
+            </div>
         </slot>
     </header>
     <ul class="ccr-weekdays">
@@ -18,9 +23,11 @@
         </li>
     </ul>
     <div class="container">
-        <Scroller v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
-            <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgcolor }">
-                <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'ccr-daycell']" :style="{ 'background-color': slotProps.data.bgcolor }">
+        <Scroller :class="[calendarmode === 'month' ? 'show' : 'hide']" v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
+            <!-- <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgclass }"> -->
+            <template v-slot:cell="slotProps" :class="slotProps.data.bgclass">
+                <!-- <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'ccr-daycell', slotProps.data.bgclass]"> -->
+                <div @click="CloseInfoPanel()" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'ccr-daycell', slotProps.data.bgclass]">
                     <div class="cell-label-container">
                         <span class="cell-label-num">{{ slotProps.data.num }} <span class="cell-label-month">{{ slotProps.data.month }}</span></span>
                     </div>
@@ -57,11 +64,17 @@
                 </div>
             </template>
         </Scroller>
-        <!-- <div ref="tooltippanelref" :class="['tooltippanel', {tooltiphidden: moretooltiphidden}]" id="tooltippanel" :style="{'top': tooltip_top, 'left': tooltip_left, 'width': tooltip_w, 'height': tooltip_h}">
-            <div v-for="(event, index) in tooltip_events" :key="event.id" class="event" :style="[{'position':'relative','background-color': GetColor(event), 'width':'calc(100% - 10px)', 'height': '20px'}]">
-                <label :style="{'font-size': eventlabelfontsize+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
+        <div :class="[calendarmode === 'day' ? 'show' : 'hide']" class="ccr-dayview">
+            <div class="timings">
+                <div v-for="time in daytimelist" :key="time" class="ccr-daytime">
+                    <div class="ccr-daytime-halfhour" v-if="time.ishalf"><span>{{ time.timestr }}</span></div>
+                    <div class="ccr-daytime-hour" v-if="!time.ishalf"><span>{{ time.timestr }}</span></div>
+                </div>                
             </div>
-        </div> -->
+            <div class="days" id="events">
+
+            </div>
+        </div>
     </div>
 </div>
 </template>
@@ -99,10 +112,14 @@ import {
     getDiffInDaysLuxon,
     deepCopy,
     daysMatch,
-    daysMatchLuxon
+    daysMatchLuxon,
+    twoDigitPad
 } from "./../../utilities/index";
 
-const { DateTime, Info } = require("luxon");
+const {
+    DateTime,
+    Info
+} = require("luxon");
 
 export default defineComponent({
     name: 'App',
@@ -164,7 +181,7 @@ export default defineComponent({
         weekendcolored: {
             type: Boolean,
             default: true,
-        },        
+        },
         timezone: {
             type: String,
             default: "system" // UTC, system, "America/New York", fixed
@@ -172,12 +189,6 @@ export default defineComponent({
         locale: {
             type: String,
             default: "en-US"
-        },
-        monthcolorvariations: {
-            type: Array,
-            default: () => {
-                return ["#f9f7f7", "#edebeb", "#f9f7f7", "#f5f5f5"]
-            }
         },
         autodaylabels: {
             type: Boolean,
@@ -268,6 +279,9 @@ export default defineComponent({
         var morepanel_status = ref(0);
         var morepanel_cell_id = ref("");
         let dayslocale: any = ref([]);
+        let bgclassvariations = ["bgclass-a", "bgclass-b", "bgclass-c", "bgclass-d"];
+        let calendarmode = ref("month");
+        let daytimelist: any = ref([]);
 
         function DotEventsStartFrom(cellevents: Array < any > , date: any) {
             let final: Array < any > = [];
@@ -362,7 +376,7 @@ export default defineComponent({
                 tooltip_top.value = (celldocumentTop + daycell.offsetHeight + 5) + "px";
                 tooltip_left.value = celldocumentLeft + "px"; */
 
-                tooltip_top.value = daycell.offsetHeight+"px";
+                tooltip_top.value = daycell.offsetHeight + "px";
                 tooltip_left.value = "0px";
             } else {
                 //style = "display: none;"
@@ -371,33 +385,27 @@ export default defineComponent({
         }
 
         function AdjustMoreStatus(celldata: any, sign: number) {
-            if(morepanel_cell_id.value === "")
-            {
+            if (morepanel_cell_id.value === "") {
                 morepanel_cell_id.value = celldata.id;
             } else {
-                if(sign === 1)
-                    {
-                        celldata._moresign++;
-                    } else {
-                        celldata._moresign--;
-                    }
+                if (sign === 1) {
+                    celldata._moresign++;
+                } else {
+                    celldata._moresign--;
+                }
 
-                if(celldata.moresign === 2)
-                {
+                if (celldata.moresign === 2) {
                     //console.log("Sign: ", celldata._moresign);
                 }
 
-                if(celldata._moresign <= 0)
-                {
+                if (celldata._moresign <= 0) {
                     celldata._moresign = 0;
                     celldata.showtooltip = false;
-                } else if(celldata._moresign > 2)
-                {
+                } else if (celldata._moresign > 2) {
                     celldata._moresign = 2;
                 }
             }
 
-            
         }
 
         function HideMorePanel() {
@@ -436,18 +444,22 @@ export default defineComponent({
 
         function CalculateEventWidth(date: any, dateid: any, event: any) {
             let daycell: any = document.querySelector(".ccr-daycell");
-            let dayIndex = date.weekday;
-            var widthmultiplier = event.duration;
+            let finalWidth = 0;
+            if (daycell) {
+                let dayIndex = date.weekday;
+                var widthmultiplier = event.duration;
 
-            if (widthmultiplier > (6 - (dayIndex-1) + 1)) widthmultiplier = (6 - (dayIndex-1) + 1);
-            var marginmultiplier = widthmultiplier;
-            if (marginmultiplier === 1) marginmultiplier = 0;
+                if (widthmultiplier > (6 - (dayIndex - 1) + 1)) widthmultiplier = (6 - (dayIndex - 1) + 1);
+                var marginmultiplier = widthmultiplier;
+                if (marginmultiplier === 1) marginmultiplier = 0;
 
-            let finalWidth = (daycell.offsetWidth * widthmultiplier) - 2 * props.eventmargin + marginmultiplier * props.eventmargin;
-            if (date.weekday === 1) {
-                widthmultiplier = getDiffInDaysLuxon(event.enddate, date);
-                finalWidth = daycell.offsetWidth * widthmultiplier - 2 * props.eventmargin;
+                finalWidth = (daycell.offsetWidth * widthmultiplier) - 2 * props.eventmargin + marginmultiplier * props.eventmargin;
+                if (date.weekday === 1) {
+                    widthmultiplier = getDiffInDaysLuxon(event.enddate, date);
+                    finalWidth = daycell.offsetWidth * widthmultiplier - 2 * props.eventmargin;
+                }
             }
+
             return finalWidth;
         }
 
@@ -481,11 +493,11 @@ export default defineComponent({
                         date: date_a,
                         hasdiv: false,
                         num: date_a.toFormat('dd'), //formatDate(date_a, "dd"),
-                        month: date_a.toFormat('MMM'),//formatDate(date_a, "MMM"),
+                        month: date_a.toFormat('MMM'), //formatDate(date_a, "MMM"),
                         events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, date_a),
                         today: today,
                         weekend: checkIfWeekendDayLuxon(date_a),
-                        bgcolor: GetMonthColor(date_a.month),
+                        bgclass: GetMonthClass(date_a.month),
                         visibleevents: [],
                         dotevents: [],
                         _moresign: 0,
@@ -523,7 +535,7 @@ export default defineComponent({
                         events: typeof eventscache[formatted_date] !== 'undefined' ? eventscache[formatted_date] : [], //GetSpecificDateEvents(formatted_date, date_b),
                         today: today,
                         weekend: checkIfWeekendDayLuxon(date_b),
-                        bgcolor: GetMonthColor(date_b.month),
+                        bgclass: GetMonthClass(date_b.month),
                         visibleevents: [],
                         dotevents: [],
                         _moresign: 0,
@@ -538,32 +550,37 @@ export default defineComponent({
             return daystoadd;
         }
 
-        function GetMonthColor(monthnum: number) {
-            let color: String = "#ffffff00";
-            let colorIndex: number = 0;
-            var max = props.monthcolorvariations.length;
+        function GetMonthClass(monthnum: number) {
+            let currentclass: String = "";
+            let classIndex: number = 0;
+            var max = bgclassvariations.length;
 
-            colorIndex = monthnum % max;
+            classIndex = monthnum % max;
 
-            if (props.monthcolorvariations[colorIndex]) {
-                color = (String)(props.monthcolorvariations[colorIndex]);
+            if (bgclassvariations[classIndex]) {
+                currentclass = (String)(bgclassvariations[classIndex]);
             }
 
-            return color;
+            return currentclass;
         }
 
         function UpdateLocaleStrings() {
-            if(props.autodaylabels)
-            {
-                let luxondays_long = Info.weekdays('long', {locale: props.locale});
-                let luxondaysshort = Info.weekdays('short', {locale: props.locale});
+            if (props.autodaylabels) {
+                let luxondays_long = Info.weekdays('long', {
+                    locale: props.locale
+                });
+                let luxondaysshort = Info.weekdays('short', {
+                    locale: props.locale
+                });
 
                 var final = [];
-                for(var f=0;f< luxondays_long.length; f++)
-                {
-                    final.push({title: luxondays_long[f], short: luxondaysshort[f]});
+                for (var f = 0; f < luxondays_long.length; f++) {
+                    final.push({
+                        title: luxondays_long[f],
+                        short: luxondaysshort[f]
+                    });
                 }
-                var temp = final[final.length-1];
+                var temp = final[final.length - 1];
                 final.pop();
                 final.unshift(temp);
 
@@ -614,7 +631,7 @@ export default defineComponent({
 
                                 event.index = available_index;
                                 event.duration = getDiffInDaysLuxon(event.enddate, event.startdate);
-                                
+
                                 if (daysMatchLuxon(event.startdate, fdates[md])) {
                                     //event.hasdiv = true;      
                                 } else {
@@ -663,7 +680,7 @@ export default defineComponent({
         function GetInitialDays(basedate: any) {
             var initialDays: any = [];
             let d = CreateDate();
-            
+
             if (basedate) d = basedate;
             let day = d.weekday;
 
@@ -672,11 +689,14 @@ export default defineComponent({
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
                 var newdate = d;
-                newdate = newdate.plus({ days: -b });
+                newdate = newdate.plus({
+                    days: -b
+                });
 
                 var today = false;
                 //var formatted_date = formatDate(newdate, "dd-MMM-yyyy");
                 var formatted_date = newdate.toFormat('dd-MM-yyyy');
+                //console.log(newdate);
                 if (ISToday(newdate)) {
                     today = true;
                     today_id = formatted_date;
@@ -691,13 +711,12 @@ export default defineComponent({
                     month: newdate.toFormat('MMM'), //formatDate(newdate, "MMM"),
                     today: today,
                     weekend: checkIfWeekendDayLuxon(newdate),
-                    bgcolor: GetMonthColor(newdate.month), //GetMonthColor(newdate.getMonth()),
+                    bgclass: GetMonthClass(newdate.month), //GetMonthClass(newdate.getMonth()),
                     visibleevents: [],
                     dotevents: [],
                     _moresign: 0,
                     showttooltip: false
                 };
-                
 
                 initialDays.push(_daytopush);
             }
@@ -709,7 +728,9 @@ export default defineComponent({
                 var newdate_f = CreateDate();
 
                 //newdate_f = addDays(newdate_f, f);
-                newdate_f = newdate_f.plus({ days: f });
+                newdate_f = newdate_f.plus({
+                    days: f
+                });
 
                 var formatted_date_f = newdate_f.toFormat('dd-MM-yyyy');
 
@@ -722,7 +743,7 @@ export default defineComponent({
                     month: newdate_f.toFormat('MMM'), //formatDate(newdate_f, "MMM"),
                     today: false,
                     weekend: checkIfWeekendDayLuxon(newdate_f),
-                    bgcolor: GetMonthColor(newdate_f.month),
+                    bgclass: GetMonthClass(newdate_f.month),
                     visibleevents: [],
                     dotevents: [],
                     _moresign: 0,
@@ -731,9 +752,11 @@ export default defineComponent({
             }
 
             // 3. Now add forward 1 month
-            var lastdate: any = initialDays[initialDays.length - 1].date;            
+            var lastdate: any = initialDays[initialDays.length - 1].date;
             var lastmonthdate = lastdate;
-            lastmonthdate = lastmonthdate.plus({ days: Math.round(initialdaysToLoad) });
+            lastmonthdate = lastmonthdate.plus({
+                days: Math.round(initialdaysToLoad)
+            });
 
             var daystoadd = GenerateForwardMonth(lastdate, lastmonthdate, true);
             initialDays = [...initialDays, ...daystoadd];
@@ -741,7 +764,9 @@ export default defineComponent({
             // 3. Now add backward 1 month
             let firstdate: any = initialDays[0].date;
             let firstdateofmonth = firstdate;
-            firstdateofmonth = firstdateofmonth.plus({ days: Math.round(-initialdaysToLoad) });
+            firstdateofmonth = firstdateofmonth.plus({
+                days: Math.round(-initialdaysToLoad)
+            });
             var daystoaddbackward = GenerateBackwardMonth(firstdateofmonth, firstdate, true);
             initialDays = [...daystoaddbackward, ...initialDays];
 
@@ -767,13 +792,17 @@ export default defineComponent({
             }, 1000);
         } // end f(): Generate Calendar Days
 
-        function CreateDate(existingDate?: Date) {
+        function CreateDate(existingDate ? : Date) {
 
             let dt = null;
-            if(existingDate) {
-                dt = DateTime.fromObject({day: existingDate.getDate(), month: existingDate.getMonth(), year: existingDate.getFullYear() });
+            if (existingDate) {
+                dt = DateTime.fromObject({
+                    day: existingDate.getDate(),
+                    month: existingDate.getMonth(),
+                    year: existingDate.getFullYear()
+                });
             } else {
-                if(props.timezone === 'UTC') {
+                if (props.timezone === 'UTC') {
                     dt = DateTime.utc();
                 } else {
                     dt = DateTime.now();
@@ -781,15 +810,15 @@ export default defineComponent({
             }
 
             // timezone varialbe can be: UTC, system, "America/New York", fixed            
-            if(props.timezone === 'UTC') {
+            if (props.timezone === 'UTC') {
                 return dt.setLocale(props.locale);
-            } else if(props.timezone === 'system') {
+            } else if (props.timezone === 'system') {
                 return dt.setLocale(props.locale);
-            } else if(props.timezone === 'fixed') {
+            } else if (props.timezone === 'fixed') {
                 return dt.setLocale(props.locale);
             } else {
                 let returned_dt = dt.setLocale(props.locale).setZone(props.timezone);
-                if(returned_dt.invalid) throw "Error in Luxon: "+returned_dt.invalid.reason;
+                if (returned_dt.invalid) throw "Error in Luxon: " + returned_dt.invalid.reason;
                 return returned_dt;
             }
         }
@@ -852,11 +881,9 @@ export default defineComponent({
             let newsize = props.eventlabelfontsize;
             const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
-            if(vw < 700)
-            {
+            if (vw < 700) {
                 newsize = 0.8 * props.eventlabelfontsize;
-            } else if(vw < 550)
-            {
+            } else if (vw < 550) {
                 newsize = 0.6 * props.eventlabelfontsize;
             }
             return newsize;
@@ -869,21 +896,29 @@ export default defineComponent({
 
         const onUpdateDataNext = (done: (data: any) => void) => {
             startDate = bottomDate;
-            endDate = bottomDate.plus({days: newdaysToLoad});
+            endDate = bottomDate.plus({
+                days: newdaysToLoad
+            });
             bottomDate = endDate;
 
             var newdata = GenerateForwardMonth(startDate, endDate, false);
-            topDate = topDate.plus({days: newdaysToLoad});
+            topDate = topDate.plus({
+                days: newdaysToLoad
+            });
 
             done(newdata);
         }
 
         const onUpdateDataPrevious = (done: (data: any) => void) => {
-            startDate = topDate.plus({days: -newdaysToLoad});
+            startDate = topDate.plus({
+                days: -newdaysToLoad
+            });
             endDate = topDate;
 
             var newdata = GenerateBackwardMonth(startDate, endDate, false);
-            bottomDate = bottomDate.plus({days: -newdaysToLoad});
+            bottomDate = bottomDate.plus({
+                days: -newdaysToLoad
+            });
 
             done(newdata);
         }
@@ -892,9 +927,22 @@ export default defineComponent({
             ScrollToDate(CreateDate(selected.date));
         }
 
+        const SwitchToDayView = () => {
+            if (calendarmode.value !== "day") {
+                calendarmode.value = "day";
+            }
+        }
+
+        const SwitchToMonthView = () => {
+            console.log("calendarmode.value: ", calendarmode.value);
+            if (calendarmode.value !== "month") {
+                calendarmode.value = "month";
+            }
+        }
+
         const ScrollToDate = (date: any) => {
             // If date is loaded inside current calendar dates
-            
+
             var formatted_date = date.toFormat("dd-MMM-yyyy");
             var cellPosition = scrollerref.value.GetCellsPosition(formatted_date);
 
@@ -902,13 +950,12 @@ export default defineComponent({
                 scrollerref.value.ScrollTo(cellPosition);
             } else {
                 console.log("Date Outside Loaded Dates");
-                
+
                 var targetdate_id = formatted_date;
                 console.log("targetdate_id: ", targetdate_id);
 
                 var initialDays = GetInitialDays(date);
                 scrollerref.value.SetAnimateNext(initialDays, () => {
-                    console.log("UpdateCurrentMonth");
                     UpdateCurrentMonth();
                 });
 
@@ -939,6 +986,35 @@ export default defineComponent({
             }
 
             return color;
+        }
+
+        const UpdateDayviewTimes = () => {
+            var dt = DateTime.utc(2000, 1, 1, 0, 0, 0);
+            for(var f=0;f < 48; f++)
+            {
+                var time = dt.valueOf();
+                var hourstr = "";
+                var ishalf = false;
+                if(f > 0)
+                {
+                    if(f%2 == 1) {
+                        hourstr = twoDigitPad(dt.hour) + ":30";
+                        ishalf = true;
+                        dt = dt.plus({hours: 1});
+                    } else {
+                        hourstr = twoDigitPad(dt.hour) + ":00";                        
+                    }
+                } else {
+                    hourstr = twoDigitPad(dt.hour) + ":00";                    
+                }
+                
+
+                daytimelist.value.push({
+                    time: time,
+                    timestr: hourstr,
+                    ishalf: ishalf
+                }); 
+            }
         }
 
         const eventsFilterVisible = computed(() => {
@@ -978,13 +1054,13 @@ export default defineComponent({
                         }
                     }
                 } else {
-                    
+
                 }
 
                 if (!Array.isArray(final)) {
                     final = [];
                 }
- 
+
                 return final;
             };
         });
@@ -1026,6 +1102,7 @@ export default defineComponent({
             UpdateEvents();
             GenerateDays();
             UpdateCurrentMonth();
+            UpdateDayviewTimes();
         });
 
         onUpdated(() => {
@@ -1034,7 +1111,7 @@ export default defineComponent({
 
         // Watch prop value change and assign to value 'selected' Ref
         watch(() => props.modelValue, (newevents: any, oldevents: any) => {
-            console.log("newevents: ",newevents);
+            console.log("newevents: ", newevents);
             UpdateEvents();
         });
 
@@ -1054,6 +1131,7 @@ export default defineComponent({
             tooltip_left,
             tooltip_w,
             tooltip_h,
+            bgclassvariations,
             tooltip_events,
             infopanelhidden,
             infopanel_title,
@@ -1068,6 +1146,8 @@ export default defineComponent({
             morepanel_cell_id,
             scrollanimate,
             dayslocale,
+            calendarmode,
+            daytimelist,
             OnScroll,
             onUpdateDataNext,
             onUpdateDataPrevious,
@@ -1084,7 +1164,9 @@ export default defineComponent({
             GetToolTipStyle,
             OpenInfoPanel,
             CloseInfoPanel,
-            GetColor
+            GetColor,
+            SwitchToDayView,
+            SwitchToMonthView
         };
     }
 });
