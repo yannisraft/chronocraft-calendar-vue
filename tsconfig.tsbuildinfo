@@ -282,8 +282,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/chronocraft-scroller-vue/types/index.d.ts": {
-        "version": "fbef6eaf18b86b562ce8be609966d3248c3e0618d02f0957560502cf49249e1a",
-        "signature": "fbef6eaf18b86b562ce8be609966d3248c3e0618d02f0957560502cf49249e1a",
+        "version": "fcee9ff0463220b7f1d32e628bf4fe4c676ed2df717645c99766386b274c1069",
+        "signature": "fcee9ff0463220b7f1d32e628bf4fe4c676ed2df717645c99766386b274c1069",
         "affectsGlobalScope": false
       },
       "./node_modules/chronocraft-datepicker-vue/types/index.d.ts": {
@@ -312,8 +312,8 @@
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "1fb3e64715d3871ef347537907916b690eed8f76071d66fd4322c6749db2669f",
-        "signature": "80721aaeac3f0a48f6a46f38d21df8b0e024133672420d04415ba1dbc1683a0f",
+        "version": "da4fbeb9471c97a594e0fccf3ef253cf6fff2ff820ee9f3785300e15f8c88101",
+        "signature": "a6e58a89031e718407ed448e4ea8278e2107d9a81ea56511ec9d035780712d1a",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/index.ts": {
@@ -342,8 +342,8 @@
         "affectsGlobalScope": false
       },
       "./src/shims-vue.d.ts": {
-        "version": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
-        "signature": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
+        "version": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
+        "signature": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
         "affectsGlobalScope": false
       },
       "./node_modules/@vue/test-utils/dist/types.d.ts": {
