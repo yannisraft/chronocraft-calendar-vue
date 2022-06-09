@@ -32,16 +32,16 @@
         </div>
     </div>
     <div class="container">
-        <Scroller :class="[calendarmode === 'month' ? 'show' : 'hide']" v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
-            <!-- <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgclass }"> -->
+        <!-- <VScroller v-model="scrollerdata" :isInfinite="true" :scrollSpeed="3" :sidegap="3" :cellWidth="50" :hasScrollbar="true" orientation="vertical" :numberOfRows="5">
+        </VScroller> -->
+        <VScroller :class="[calendarmode === 'month' ? 'show' : 'hide']" v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
+
             <template v-slot:cell="slotProps" :class="slotProps.data.bgclass">
-                <!-- <div @click="CloseInfoPanel()" @mouseenter="AdjustMoreStatus(slotProps.data, 1)" @mouseleave="AdjustMoreStatus(slotProps.data, -1)" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'ccr-daycell', slotProps.data.bgclass]"> -->
                 <div @click="CloseInfoPanel()" :class="[{ litoday: slotProps.data.today },{ weekendday: slotProps.data.weekend && weekendcolored },'ccr-daycell', slotProps.data.bgclass]">
                     <div class="cell-label-container">
                         <span class="cell-label-num">{{ slotProps.data.num }} <span class="cell-label-month">{{ slotProps.data.month }}</span></span>
                     </div>
-                    <div class="cell-events-container">
-                        <!-- <div @click="OpenInfoPanel($event, slotProps.data)" v-for="(event, index) in EventsStartFrom(slotProps.data.events, slotProps.data.date, slotProps.data)" :key="event.id" class="event" :style="[{'background-color': event.color, 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]"> -->
+                    <div class="cell-events-container">                        
                         <div @click="OpenInfoPanel($event, slotProps.data, event)" v-for="(event, index) in eventsFilterVisible(slotProps.data)" :key="event.id" class="ccr-event" :style="[{'background-color': GetColor(event), 'margin': eventmargin+'px', 'top': String(event.index * (eventheight+eventmargin)) + 'px', 'width': CalculateEventWidth(slotProps.data.date, slotProps.data.id, event)+'px'}]">
                             <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
@@ -56,8 +56,6 @@
                             <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
                         </div>
                     </div>
-                    <!--<div v-if="!moretooltiphidden && activetooltipid === slotProps.data.id" class="tooltippanel" :id="slotProps.data.id" :style="GetToolTipStyle(slotProps.data.events, slotProps.data.date, $event)">
-                    </div>-->
                 </div>
             </template>
             <template v-slot:overlay>
@@ -72,9 +70,9 @@
                     <button class="closebtn" @click="infopanelhidden = true;"><span class="material-icons-outlined">close</span></button>
                 </div>
             </template>
-        </Scroller>
+        </VScroller>
         <div :class="[calendarmode === 'day' ? 'show' : 'hide']" class="ccr-dayview">
-            <Scroller v-model="dayviewdata" :height="height" :numcols="1" :static="true" :gap="0" :cellheight="1240" :cellsquared="false">
+            <!-- <VScroller v-model="dayviewdata" :height="height" :numcols="1" :static="true" :gap="0" :cellheight="1240" :cellsquared="false">
                 <template v-slot:cell="slotProps">
                     <div class="ccr-dayview-scroller">
                         <div class="timings">
@@ -90,7 +88,10 @@
                         </div>
                     </div>
                 </template>
-            </Scroller>
+            </VScroller> -->
+
+
+
             <!-- <div class="timings">
                 <div v-for="time in daytimelist" :key="time" class="ccr-daytime">
                     <div class="ccr-daytime-halfhour" v-if="time.ishalf"><span>{{ time.timestr }}</span></div>
@@ -119,9 +120,10 @@ import {
     getCurrentInstance
 } from "vue";
 
-import {
-    VScroller
-} from 'chronocraft-scroller-vue';
+//import { VScroller } from 'chronocraft-scroller-vue';
+import {VScroller} from 'chronocraft-scroller-vue';
+
+console.log("VScroller: ", VScroller);
 
 import {
     DatePicker
@@ -839,8 +841,11 @@ export default defineComponent({
             // 4. Scroll today date
             setTimeout(() => {
                 if (today_id !== '') {
-                    var cellPosition = scrollerref.value.GetCellsPosition(today_id);
-                    scrollerref.value.ScrollTo(cellPosition);
+                    if(scrollerref.value)
+                    {
+                        var cellPosition = scrollerref.value.GetCellsPosition(today_id);
+                        scrollerref.value.ScrollTo(cellPosition);
+                    }                    
                 }
             }, 1000);
         } // end f(): Generate Calendar Days
