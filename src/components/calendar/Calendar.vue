@@ -92,7 +92,7 @@ import {
 } from "vue";
 
 import {
-    Scroller
+    VScroller
 } from 'chronocraft-scroller-vue';
 
 import {
@@ -124,7 +124,7 @@ const {
 export default defineComponent({
     name: 'App',
     components: {
-        Scroller,
+        VScroller,
         DatePicker
     },
     props: {

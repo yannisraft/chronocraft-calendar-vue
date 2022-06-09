@@ -282,8 +282,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/chronocraft-scroller-vue/types/index.d.ts": {
-        "version": "fbef6eaf18b86b562ce8be609966d3248c3e0618d02f0957560502cf49249e1a",
-        "signature": "fbef6eaf18b86b562ce8be609966d3248c3e0618d02f0957560502cf49249e1a",
+        "version": "fcee9ff0463220b7f1d32e628bf4fe4c676ed2df717645c99766386b274c1069",
+        "signature": "fcee9ff0463220b7f1d32e628bf4fe4c676ed2df717645c99766386b274c1069",
         "affectsGlobalScope": false
       },
       "./node_modules/chronocraft-datepicker-vue/types/index.d.ts": {
@@ -312,7 +312,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "74a0f68ae4d8f993bb59ab5fb130a619702c1b017b513c1d682efce45b5f40f8",
+        "version": "da4fbeb9471c97a594e0fccf3ef253cf6fff2ff820ee9f3785300e15f8c88101",
         "signature": "a6e58a89031e718407ed448e4ea8278e2107d9a81ea56511ec9d035780712d1a",
         "affectsGlobalScope": false
       },
@@ -344,21 +344,6 @@
       "./src/shims-vue.d.ts": {
         "version": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
         "signature": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
-        "affectsGlobalScope": false
-      },
-      "./src/components/CountDownTimer/index.ts": {
-        "version": "7dcd2ea226529287ff12002cfef2a2abddf44e4f5aa28aacdb470179c28a6369",
-        "signature": "5d3ce133f92e425f0b3236e044aad76595f45fca01f9b007d8267117f527a3e0",
-        "affectsGlobalScope": false
-      },
-      "./src/components/TimeClock/index.ts": {
-        "version": "66f8946d1741ebe6ddb8b9df644bf8abce69073a9a122da81b43c0e2dd464579",
-        "signature": "44dde3a8d3f6400570bdceabdc6d5ab457696cf22f29d75ccb7619848bbb8eb6",
-        "affectsGlobalScope": false
-      },
-      "./src/components/HelloWorld.vue.ts": {
-        "version": "e5f3f27f3e873cdacd1b77c6adc5fd6bb1880d318c862dab47ecffebacbb19e6",
-        "signature": "b130b560af1842db4e02a1fed469d4138acdfa7a37458259d33cd3632d747fc8",
         "affectsGlobalScope": false
       },
       "./node_modules/@vue/test-utils/dist/types.d.ts": {
@@ -652,15 +637,6 @@
       "./src/components/Calendar/index.ts": [
         "./src/components/Calendar/Calendar.vue.ts"
       ],
-      "./src/components/CountDownTimer/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
-      "./src/components/HelloWorld.vue.ts": [
-        "./node_modules/vue/dist/vue.d.ts"
-      ],
-      "./src/components/TimeClock/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
       "./src/components/index.ts": [
         "./src/components/Calendar/index.ts"
       ],
@@ -819,15 +795,6 @@
       "./src/components/Calendar/index.ts": [
         "./src/components/Calendar/Calendar.vue.ts"
       ],
-      "./src/components/CountDownTimer/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
-      "./src/components/HelloWorld.vue.ts": [
-        "./node_modules/vue/dist/vue.d.ts"
-      ],
-      "./src/components/TimeClock/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
       "./src/components/index.ts": [
         "./src/components/Calendar/index.ts"
       ],
@@ -932,9 +899,6 @@
       "./src/App.vue.ts",
       "./src/components/Calendar/Calendar.vue.ts",
       "./src/components/Calendar/index.ts",
-      "./src/components/CountDownTimer/index.ts",
-      "./src/components/HelloWorld.vue.ts",
-      "./src/components/TimeClock/index.ts",
       "./src/components/index.ts",
       "./src/index.ts",
       "./src/interfaces/index.ts",
