@@ -25,6 +25,11 @@ export const getDiffInDaysLuxon = (d1: any, d2: any): number => {
     return Math.ceil(result / (60 * 60 * 24));
 };
 
+export const getTotalCalendarDaysLuxon = (d1: any, d2: any): number => {
+    const result = d1.toSeconds() - d2.toSeconds();
+    return Math.ceil(result / (60 * 60 * 24));
+};
+
 export const daysMatch = (d1: Date, d2: Date): boolean => {
     return d1.getDate() == d2.getDate() &&
         d1.getMonth() == d2.getMonth() &&

@@ -15,13 +15,22 @@
             </div>
         </slot>
     </header>
-    <ul class="ccr-weekdays">
-        <li v-for="daylabel in dayslocale" :key="daylabel.title">
-            <slot :daylabel="daylabel" name="headercell">
-                <abbr :title="daylabel.short">{{ daylabel.title }}</abbr>
-            </slot>
-        </li>
-    </ul>
+    <div class="ccr-calendar-subheader">
+        <ul :class="[calendarmode === 'month' ? 'show' : 'hide']" class="ccr-weekdays-header">
+            <li v-for="daylabel in dayslocale" :key="daylabel.title">
+                <slot :daylabel="daylabel" name="headercellweekday">
+                    <abbr :title="daylabel.short">{{ daylabel.title }}</abbr>
+                </slot>
+            </li>
+        </ul>
+        <div :class="[calendarmode === 'day' ? 'show' : 'hide']" class="ccr-day-header">
+            <h4>
+                <slot daylabel="daylabel" name="headercellday">
+                    {{ selectedDayString }}
+                </slot>
+            </h4>
+        </div>
+    </div>
     <div class="container">
         <Scroller :class="[calendarmode === 'month' ? 'show' : 'hide']" v-model="scrollerdata" ref="scrollerref" :cellwidth="cellwidth" :cellheight="cellheight" :orientation="orientation" :numcols="7" :gap="gap" :numrows="3" :height="height" :contentpadding="contentpadding" :wheelscrollspeed="wheelscrollspeed" :newcellslength="newcellslength" :cellsquared="cellsquared" @on-scroll="OnScroll" @on-update-data-next="onUpdateDataNext" @on-update-data-previous="onUpdateDataPrevious">
             <!-- <template v-slot:cell="slotProps" :style="{ 'background-color': slotProps.data.bgclass }"> -->
@@ -65,15 +74,34 @@
             </template>
         </Scroller>
         <div :class="[calendarmode === 'day' ? 'show' : 'hide']" class="ccr-dayview">
-            <div class="timings">
+            <Scroller v-model="dayviewdata" :height="height" :numcols="1" :static="true" :gap="0" :cellheight="1240" :cellsquared="false">
+                <template v-slot:cell="slotProps">
+                    <div class="ccr-dayview-scroller">
+                        <div class="timings">
+                            <div v-for="time in daytimelist" :key="time" class="ccr-daytime">
+                                <div class="ccr-daytime-halfhour" v-if="time.ishalf"><span>{{ time.timestr }}</span></div>
+                                <div class="ccr-daytime-hour" v-if="!time.ishalf"><span>{{ time.timestr }}</span></div>
+                            </div>
+                        </div>
+                        <div class="days" id="events">
+                            <div @click="OpenInfoPanelDay($event, event)" v-for="event in eventsFilterDayView()" :key="event.id" class="ccr-dayevent" :style="[{'background-color': GetColor(event)}]">
+                                <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Scroller>
+            <!-- <div class="timings">
                 <div v-for="time in daytimelist" :key="time" class="ccr-daytime">
                     <div class="ccr-daytime-halfhour" v-if="time.ishalf"><span>{{ time.timestr }}</span></div>
                     <div class="ccr-daytime-hour" v-if="!time.ishalf"><span>{{ time.timestr }}</span></div>
-                </div>                
+                </div>
             </div>
             <div class="days" id="events">
-
-            </div>
+                <div @click="OpenInfoPanelDay($event, event)" v-for="event in eventsFilterDayView()" :key="event.id" class="ccr-dayevent" :style="[{'background-color': GetColor(event)}]">
+                    <label :style="{'font-size': GetEventsFontsize()+'px', 'padding-top': eventlabelvpadding + 'px','padding-bottom': eventlabelvpadding + 'px'}">{{ event.title }}</label>
+                </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -110,6 +138,7 @@ import {
     getDiffInDays,
     getDiffLuxon,
     getDiffInDaysLuxon,
+    getTotalCalendarDaysLuxon,
     deepCopy,
     daysMatch,
     daysMatchLuxon,
@@ -180,7 +209,11 @@ export default defineComponent({
         },
         weekendcolored: {
             type: Boolean,
-            default: true,
+            default: true
+        },
+        eventendatday: {
+            type: Boolean,
+            default: true
         },
         timezone: {
             type: String,
@@ -244,6 +277,9 @@ export default defineComponent({
     setup(props, context) {
         let monthLabel = ref("");
         let scrollerdata: any = ref([]);
+        let dayviewdata: any = ref([{
+            id: 1
+        }]);
         let eventsdata: any = ref(props.modelValue);
         let newcellslength = 30;
         let bottomDate: any = null;
@@ -282,6 +318,8 @@ export default defineComponent({
         let bgclassvariations = ["bgclass-a", "bgclass-b", "bgclass-c", "bgclass-d"];
         let calendarmode = ref("month");
         let daytimelist: any = ref([]);
+        let dayselected = CreateDate();
+        let dayselecteddata = ref({});
 
         function DotEventsStartFrom(cellevents: Array < any > , date: any) {
             let final: Array < any > = [];
@@ -449,15 +487,32 @@ export default defineComponent({
                 let dayIndex = date.weekday;
                 var widthmultiplier = event.duration;
 
-                if (widthmultiplier > (6 - (dayIndex - 1) + 1)) widthmultiplier = (6 - (dayIndex - 1) + 1);
-                var marginmultiplier = widthmultiplier;
-                if (marginmultiplier === 1) marginmultiplier = 0;
-
-                finalWidth = (daycell.offsetWidth * widthmultiplier) - 2 * props.eventmargin + marginmultiplier * props.eventmargin;
-                if (date.weekday === 1) {
-                    widthmultiplier = getDiffInDaysLuxon(event.enddate, date);
-                    finalWidth = daycell.offsetWidth * widthmultiplier - 2 * props.eventmargin;
+                if (dayIndex < 7) {
+                    if (event.duration > (7 - dayIndex)) {
+                        widthmultiplier = (7 - dayIndex) - 1;
+                    }
+                } else {
+                    if (event.duration > 7) {
+                        widthmultiplier = 6;
+                    }
                 }
+
+                if (props.eventendatday) {
+                    widthmultiplier++;
+                }
+
+                if (widthmultiplier === 0) widthmultiplier = 1;
+
+                /* console.log("D: ", date.toFormat('dd-MM-yyyy'));
+                console.log("daycell.offsetWidth: ", daycell.offsetWidth);
+                console.log("duration: ", event.duration);
+                console.log("widthmultiplier: ", widthmultiplier); */
+
+                if (date.weekday === 7) {
+                    widthmultiplier = getDiffInDaysLuxon(event.enddate, date);
+                }
+
+                finalWidth = (daycell.offsetWidth * widthmultiplier) - 2 * props.eventmargin + (widthmultiplier - 1) * props.gap;
             }
 
             return finalWidth;
@@ -684,8 +739,6 @@ export default defineComponent({
             if (basedate) d = basedate;
             let day = d.weekday;
 
-            console.log("day: ", day);
-
             // 1. Add backward days
             for (var b = day; b >= 0; b--) {
                 var newdate = d;
@@ -866,6 +919,8 @@ export default defineComponent({
             e.stopPropagation();
         }
 
+        function OpenInfoPanelDay(e: any, event: any) {}
+
         function CloseInfoPanel(cell: any) {
             infopanelhidden.value = true;
         }
@@ -990,31 +1045,36 @@ export default defineComponent({
 
         const UpdateDayviewTimes = () => {
             var dt = DateTime.utc(2000, 1, 1, 0, 0, 0);
-            for(var f=0;f < 48; f++)
-            {
+            for (var f = 0; f < 48; f++) {
                 var time = dt.valueOf();
                 var hourstr = "";
                 var ishalf = false;
-                if(f > 0)
-                {
-                    if(f%2 == 1) {
+                if (f > 0) {
+                    if (f % 2 == 1) {
                         hourstr = twoDigitPad(dt.hour) + ":30";
                         ishalf = true;
-                        dt = dt.plus({hours: 1});
+                        dt = dt.plus({
+                            hours: 1
+                        });
                     } else {
-                        hourstr = twoDigitPad(dt.hour) + ":00";                        
+                        hourstr = twoDigitPad(dt.hour) + ":00";
                     }
                 } else {
-                    hourstr = twoDigitPad(dt.hour) + ":00";                    
+                    hourstr = twoDigitPad(dt.hour) + ":00";
                 }
-                
 
                 daytimelist.value.push({
                     time: time,
                     timestr: hourstr,
                     ishalf: ishalf
-                }); 
+                });
             }
+
+            daytimelist.value.push({
+                time: DateTime.utc(2000, 1, 1, 0, 0, 0),
+                timestr: "00:00",
+                ishalf: false
+            });
         }
 
         const eventsFilterVisible = computed(() => {
@@ -1031,15 +1091,12 @@ export default defineComponent({
                                 if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
 
                                     if (cellevents[f].index < fiteventsnumber.value) {
-                                        /* console.log("A: ", cellevents[f].startdate);
-                                        console.log("B: ", date); */
-
                                         if (daysMatchLuxon(cellevents[f].startdate, date)) {
                                             if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
                                                 final.push(cellevents[f]);
                                             }
                                         } else {
-                                            if (date.weekday === 1) {
+                                            if (date.weekday === 7) {
                                                 let days = getDiffInDaysLuxon(cellevents[f].enddate, date);
                                                 if (days > 0) {
                                                     if (cellevents[f] !== null && typeof cellevents[f] !== 'undefined') {
@@ -1097,6 +1154,46 @@ export default defineComponent({
             };
         });
 
+        const eventsFilterDayView = computed(() => {
+            return () => {
+                let final: Array < any > = [];
+                var formatted_date = dayselected.toFormat("dd-MM-yyyy");
+                let cellevents = eventscache[formatted_date];
+
+                if (cellevents) {
+                    /* if (cellevents.length > fiteventsnumber.value) {
+                        if (cellevents.length > 0) {
+                            if (cellevents.length > fiteventsnumber.value + 3) {
+                                final = cellevents.slice(fiteventsnumber.value, fiteventsnumber.value + 3);
+                            } else {
+                                final = cellevents.slice(fiteventsnumber.value, cellevents.length);
+                            }
+                        }
+                    } else {
+                        // if shorter but there is an index with higher value
+                        for (var f = 0; f < cellevents.length; f++) {
+                            if (cellevents[f].index !== null && typeof cellevents[f].index !== 'undefined') {
+                                if (cellevents[f].index >= fiteventsnumber.value) {
+                                    final.push(cellevents[f]);
+                                }
+                            }
+                        }
+                    } */
+                    final = cellevents;
+                }
+
+                return final;
+            };
+        });
+
+        const selectedDayString = computed(() => {
+            var final = "-";
+            if (dayselected) {
+                final = dayselected.toFormat("dd-MMM");
+            }
+            return final;
+        });
+
         onMounted(() => {
             UpdateLocaleStrings();
             UpdateEvents();
@@ -1118,6 +1215,7 @@ export default defineComponent({
         return {
             monthLabel,
             scrollerdata,
+            dayviewdata,
             eventsdata,
             newcellslength,
             mineventwidth,
@@ -1142,12 +1240,14 @@ export default defineComponent({
             infopanel_eventcolor,
             eventsFilterVisible,
             eventsFilterNonVisible,
+            eventsFilterDayView,
             morepanel_status,
             morepanel_cell_id,
             scrollanimate,
             dayslocale,
             calendarmode,
             daytimelist,
+            selectedDayString,
             OnScroll,
             onUpdateDataNext,
             onUpdateDataPrevious,

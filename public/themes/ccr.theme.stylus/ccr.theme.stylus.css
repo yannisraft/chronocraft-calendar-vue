@@ -103,7 +103,7 @@ p {
     background: #1e193b !important;
 }
 
-ul.ccr-weekdays li {
+ul.ccr-weekdays-header li {
     color: #d5d0ef;
 }
 
@@ -174,7 +174,7 @@ ul.ccr-weekdays li {
     color: #ffbe8b;
 }
 
-.ccr-weekdays {
+.ccr-weekdays-header {
     margin-right: 20px;
     margin-left: 10px;
 }

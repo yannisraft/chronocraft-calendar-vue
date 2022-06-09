@@ -292,8 +292,8 @@
         "affectsGlobalScope": false
       },
       "./src/utilities/dateUtilities.ts": {
-        "version": "530827ce9f975aecc1a9fc37fef443fdff6361e2b676126eb9ed79085dfe85a9",
-        "signature": "68896d747867fef686a4079f4b520478bc408334aafee887930d48c2e4c5c6bb",
+        "version": "472227247049180d5f30086241569262d84a0fd9195e7c23415e17fb3c8bd229",
+        "signature": "6a8bc282f0df63f3d8e0650678b45937adf98e3ec911f1d0a42e85fd67883085",
         "affectsGlobalScope": false
       },
       "./src/interfaces/index.ts": {
@@ -307,13 +307,13 @@
         "affectsGlobalScope": false
       },
       "./src/utilities/index.ts": {
-        "version": "c651eb135e895fccacc7e273b9b286e3e07cde67ea090293d0874446f4cbecf2",
-        "signature": "c651eb135e895fccacc7e273b9b286e3e07cde67ea090293d0874446f4cbecf2",
+        "version": "6550105103a685d438c7a9b1f0da3d291fa34e4753879373484adc179f29ce59",
+        "signature": "6550105103a685d438c7a9b1f0da3d291fa34e4753879373484adc179f29ce59",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/Calendar.vue.ts": {
-        "version": "74a0f68ae4d8f993bb59ab5fb130a619702c1b017b513c1d682efce45b5f40f8",
-        "signature": "a6e58a89031e718407ed448e4ea8278e2107d9a81ea56511ec9d035780712d1a",
+        "version": "1fb3e64715d3871ef347537907916b690eed8f76071d66fd4322c6749db2669f",
+        "signature": "80721aaeac3f0a48f6a46f38d21df8b0e024133672420d04415ba1dbc1683a0f",
         "affectsGlobalScope": false
       },
       "./src/components/Calendar/index.ts": {
@@ -332,33 +332,18 @@
         "affectsGlobalScope": false
       },
       "./src/App.vue.ts": {
-        "version": "77126627935915cf6b7815058ee3348c4029e5d966760521c1274ccbbdb271cd",
+        "version": "1901c6e7b1305bc3018bd5120df89f4bf4ef081025925a4c4199073c7a3f478e",
         "signature": "42bb698a67411b0d519fc7a9bbe63fe14033c0ae8d3c2bc8f5fc3e3eed7f8323",
         "affectsGlobalScope": false
       },
       "./src/main.ts": {
-        "version": "50cb9f18b1c7115799ae456f0d0038840278b49ea520b5549d468ec76c248fb9",
+        "version": "ade4e6ade0df33597d58ee6ce74a8dab8a3b741914ad5b699f78dfc302a26a2b",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
       "./src/shims-vue.d.ts": {
-        "version": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
-        "signature": "34ad86c5e067c3c4f8d152ae81ea03d1cdb37d27cacb6b37a495cc0aa8c3fa05",
-        "affectsGlobalScope": false
-      },
-      "./src/components/CountDownTimer/index.ts": {
-        "version": "7dcd2ea226529287ff12002cfef2a2abddf44e4f5aa28aacdb470179c28a6369",
-        "signature": "5d3ce133f92e425f0b3236e044aad76595f45fca01f9b007d8267117f527a3e0",
-        "affectsGlobalScope": false
-      },
-      "./src/components/TimeClock/index.ts": {
-        "version": "66f8946d1741ebe6ddb8b9df644bf8abce69073a9a122da81b43c0e2dd464579",
-        "signature": "44dde3a8d3f6400570bdceabdc6d5ab457696cf22f29d75ccb7619848bbb8eb6",
-        "affectsGlobalScope": false
-      },
-      "./src/components/HelloWorld.vue.ts": {
-        "version": "e5f3f27f3e873cdacd1b77c6adc5fd6bb1880d318c862dab47ecffebacbb19e6",
-        "signature": "b130b560af1842db4e02a1fed469d4138acdfa7a37458259d33cd3632d747fc8",
+        "version": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
+        "signature": "36eed4536b37a2a01ac240ce30db05a93e627178689414935b23a7bad525a57c",
         "affectsGlobalScope": false
       },
       "./node_modules/@vue/test-utils/dist/types.d.ts": {
@@ -432,7 +417,7 @@
         "affectsGlobalScope": false
       },
       "./tests/unit/example.spec.ts": {
-        "version": "dd2340e8e722bf60bdffeb4ec561a85381a79f876dc7db1d6493afd2e9fb09fd",
+        "version": "ff4d67073269cb7c417ab7aa511d6c5e58e2648280b49a2d9b05f0ae2aae9781",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
@@ -513,7 +498,7 @@
         "lib.scripthost.d.ts"
       ],
       "inlineSourceMap": false,
-      "pathsBasePath": "D:/INHOUSE/ChronoCraft/Calendar/chronocraft-calendar-vue",
+      "pathsBasePath": "F:/DEVELOPMENT/ChronoCraft/Calendar/chronocraft-calendar-vue",
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
@@ -651,15 +636,6 @@
       ],
       "./src/components/Calendar/index.ts": [
         "./src/components/Calendar/Calendar.vue.ts"
-      ],
-      "./src/components/CountDownTimer/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
-      "./src/components/HelloWorld.vue.ts": [
-        "./node_modules/vue/dist/vue.d.ts"
-      ],
-      "./src/components/TimeClock/index.ts": [
-        "./src/shims-vue.d.ts"
       ],
       "./src/components/index.ts": [
         "./src/components/Calendar/index.ts"
@@ -819,15 +795,6 @@
       "./src/components/Calendar/index.ts": [
         "./src/components/Calendar/Calendar.vue.ts"
       ],
-      "./src/components/CountDownTimer/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
-      "./src/components/HelloWorld.vue.ts": [
-        "./node_modules/vue/dist/vue.d.ts"
-      ],
-      "./src/components/TimeClock/index.ts": [
-        "./src/shims-vue.d.ts"
-      ],
       "./src/components/index.ts": [
         "./src/components/Calendar/index.ts"
       ],
@@ -932,9 +899,6 @@
       "./src/App.vue.ts",
       "./src/components/Calendar/Calendar.vue.ts",
       "./src/components/Calendar/index.ts",
-      "./src/components/CountDownTimer/index.ts",
-      "./src/components/HelloWorld.vue.ts",
-      "./src/components/TimeClock/index.ts",
       "./src/components/index.ts",
       "./src/index.ts",
       "./src/interfaces/index.ts",

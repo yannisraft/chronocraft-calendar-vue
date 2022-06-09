@@ -161,8 +161,8 @@ export default defineComponent({
                     title: "Event #10",
                     type: 'work',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-03-20T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-03-22T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-04-08T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-04-09T10:20:30Z'),
                 },
                 {
                     id: 11,
@@ -170,8 +170,8 @@ export default defineComponent({
                     type: 'break',
                     category: 'test',
                     description: "lalal and lololo koasda asd",
-                    startdate: DateTime.fromISO('2022-03-24T10:20:30Z'),
-                    enddate: DateTime.fromISO('2022-04-01T10:20:30Z'),
+                    startdate: DateTime.fromISO('2022-04-08T10:20:30Z'),
+                    enddate: DateTime.fromISO('2022-04-08T10:20:30Z'),
                 }
             ]
         }
